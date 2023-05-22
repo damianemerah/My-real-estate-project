@@ -1,0 +1,18 @@
+extends base
+
+block content 
+    .blog-post
+        if blog.coverImage
+            img(src=blog.coverImage, alt='Blog Cover Image')
+        h1.blog-post__title= blog.title
+        p.blog-post__content= blog.content
+        each sub in blog.subheading 
+            h2.blog-post__title= sub.title
+            p.blog-post__content= sub.content
+        if blog.tags && blog.tags.length > 0
+            ul.blog-post__tags
+                each tag in blog.tags
+                    li.blog-post__tag= tag
+
+
+        

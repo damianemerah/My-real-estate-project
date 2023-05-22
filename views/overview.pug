@@ -1,0 +1,75 @@
+extends base
+
+block content
+    header.hero
+        .hero_container
+            form.hero_form(action="post")
+                h1 Find your next home
+                input.hero_input(type="text" id="search-text" placeholder="Where do you want to live")
+                .hero_btn
+                    a.hero_btn--buy.btn(href='#') Buy
+                    a.hero_btn--rent.btn(href='#') Rent
+                    a.hero_btn--shortlet.btn(href='#') Shortlet
+                    a.hero_btn--land.btn(href='#') Land
+
+    section.feature
+        h2 Featured Properties
+        .feature_container
+            each property in properties
+                .card
+                    img.card_img(src="https://www.propertypro.ng/blog/wp-content/uploads/2023/04/pexels-max-rahubovskiy-6588578-150x150.jpg")
+                    .card_detail
+                        h4.card_detail-name= `${property.name}`
+                        h5.card_detail-location= `${property.locations.city}, ${property.locations.state}`
+                        .card_detail-company
+                            img.card_detail-company-item(src='/img/logo-green.png')
+                            img.card_detail-company-item(src='/img/logo-green.png')
+
+    section.service
+        h2 Services
+        .service_container.section_container
+            .service_box
+                .service_card
+                    img.service_card-img(src="https://images.propertypro.ng/logo/VendorCategory-ba8V9ADQlE3J03Z.jpg")
+                    .service_card-text
+                        h3 Electrician 
+                        p 42 Vendors
+                .service_card
+                    img.service_card-img(src="https://images.propertypro.ng/logo/VendorCategory-vnIjXjHbKi2RqnY.jpg")
+                    .service_card-text
+                        h3 Plumbers 
+                        p 17 Vendors
+                .service_card
+                    img.service_card-img(src="https://images.propertypro.ng/logo/VendorCategory-TwGfENlnPGYyWZE.jpg")
+                    .service_card-text
+                        h3 Painters 
+                        p 40 Vendors
+            button.service_btn.btn View more service
+    
+    section.blog
+        h2 Recent from the Blog 
+        .blog_container 
+            .blog_card 
+                img.blog_card-img(src='https://www.propertypro.ng/blog/wp-content/uploads/2023/04/pexels-max-rahubovskiy-6588578-150x150.jpg')
+                .blog_card-detail
+                    h5.blog_card-heading
+                        a(href="#") Interior design Trends For The Bedroom in 2023
+                    p.blog_card-text The New Year and the change of seasons are the perfect opportunities to consider some home improvements. In some seasons
+                    button.blog_card-btn.btn READ MORE           
+        
+            .blog_card 
+                img.blog_card-img(src='https://www.propertypro.ng/blog/wp-content/uploads/2023/04/pexels-max-rahubovskiy-6588578-150x150.jpg')
+                .blog_card-detail
+                    h5.blog_card-heading
+                        a(href="#") Interior design Trends For The Bedroom in 2023
+                    p.blog_card-text The New Year and the change of seasons are the perfect opportunities to consider some home improvements. In some seasons
+                    button.blog_card-btn.btn READ MORE           
+        
+            .blog_card 
+                img.blog_card-img(src='https://www.propertypro.ng/blog/wp-content/uploads/2023/04/pexels-max-rahubovskiy-6588578-150x150.jpg')
+                .blog_card-detail
+                    h5.blog_card-heading
+                        a(href="#") Interior design Trends For The Bedroom in 2023
+                    p.blog_card-text The New Year and the change of seasons are the perfect opportunities to consider some home improvements. In some seasons
+                    button.blog_card-btn.btn READ MORE           
+

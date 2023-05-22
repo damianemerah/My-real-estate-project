@@ -1,0 +1,41 @@
+{
+  "name": "real-estate",
+  "version": "1.0.0",
+  "description": "Real Estate App",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "main": "app.js",
+  "targets": {
+    "main": false
+  },
+  "scripts": {
+    "start": "nodemon server.js",
+    "start:prod": "SET NODE_ENV=production&& nodemon server.js",
+    "debug": "ndb server.js",
+    "watch:js": "parcel watch ./public/js/index.js --dist-dir ./public/js/bundle",
+    "build:js": "parcel build ./public/js/index.js --dist-dir ./public/js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "core-js": "^3.30.2",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "livereload": "^0.9.3",
+    "mongoose": "^7.1.1",
+    "nodemon": "^2.0.22",
+    "pug": "^3.0.2",
+    "regenerator-runtime": "^0.13.11",
+    "slugify": "^1.6.6",
+    "validator": "^13.9.0"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "devDependencies": {
+    "connect-livereload": "^0.6.1",
+    "parcel": "^2.8.3"
+  }
+}

@@ -1,0 +1,26 @@
+extends base
+
+block content
+    main.main
+        .card-container
+            each property in properties
+                .card
+                    .card__header
+                        .card__picture
+                            .card__picture-overlay &nbsp;
+                            img.card__picture-img(src=`/img/tours/${property.imageCover}`, alt=`${property.name}`)
+                        h3.heading-tertirary
+                            span= property.name
+
+                    .card__details
+                        h4.card__sub-heading= `${property.name}`
+                        .card__data
+                            svg.card__icon
+                                use(xlink:href='/img/icons.svg#icon-flag')
+                            span= `${property.locations.length} stops`
+                        
+
+                    .card__footer
+                        p
+                            span.card__footer-value= `$${property.price}`
+                        a.btn.btn--green.btn--small(href=`/tour/${property.slug || 'SLUG'}`) Details
