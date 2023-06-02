@@ -1,0 +1,15 @@
+extends base
+
+block content
+    .blogs.container
+        //- if user.role === "admin"
+        //-     a.blogs__new(href='/blog/new') New Blog
+        each blog in blogs
+            .blog__card.blogs__content
+                .blog__card-img-box 
+                    img.blog__card-img(src='https://www.propertypro.ng/blog/wp-content/uploads/2023/04/pexels-max-rahubovskiy-6588578-150x150.jpg')
+                    .overlay
+                .blog__card-detail
+                    h5.blog__card-heading Interior design Trends For The Bedroom in 2023
+                    p.blog__card-text= blog.content
+                    a(href=`/blog/${blog.id}`).blog__card-btn.btn READ MORE

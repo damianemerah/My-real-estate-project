@@ -2,25 +2,54 @@ extends base
 
 block content
     main.main
-        .card-container
-            each property in properties
-                .card
-                    .card__header
-                        .card__picture
-                            .card__picture-overlay &nbsp;
-                            img.card__picture-img(src=`/img/tours/${property.imageCover}`, alt=`${property.name}`)
-                        h3.heading-tertirary
-                            span= property.name
+        .container.property
+            .property__content
+                .property__name-box
+                    p.property__name= property.name
+                    .property__details 
+                        p.property__location= property.location.address
+                        p.property__price= `N${property.price}`
+                .property__detail 
+                    .property__img-box
+                        img.property__img(src=`${property.imageCover}`)
+                    .property__images-container
+                        .property__images-box
+                            each img in property.images
+                                .property__images
+                                    img.property__images-item(src=`${img}`)
+                .property__features
+                    .property__amenities 
+                        h2.section__title Key Features 
+                        ul.property__amenities-list 
+                            if property.type !== "land"
+                                each item in property.amenities 
+                                    li.property__amenities-list-item 
+                                        img(src="https://www.propertypro.ng/assets/assets/img/property/d74eaca1be63b5455d711bc0709d51cc-key-icon.png")
+                                        p.property__amenities-list-item-text= `${item.quantity} ${item.amenity}`
+                            each item in property.tags 
+                                li.property__amenities-list-item 
+                                    img(src="https://www.propertypro.ng/assets/assets/img/property/d74eaca1be63b5455d711bc0709d51cc-key-icon.png")
+                                    p.property__amenities-list-item-text= item
+                    .property__description 
+                        h2.section__title Full Description 
+                        p.property__description-text= property.description
+            .property__side
+                .property__agent-details
+                    .property__agent
+                        if property.agent.logo
+                            img.property__agent-logo(src=`${property.agent.logo}`, alt=`${property.agent.companyName}`)
+                        if property.agent.companyName
+                            p.property__agent-company= property.agent.companyName
+                        p.property__agent-name
+                            span Agent: 
+                            | #{property.agent.name}
 
-                    .card__details
-                        h4.card__sub-heading= `${property.name}`
-                        .card__data
-                            svg.card__icon
-                                use(xlink:href='/img/icons.svg#icon-flag')
-                            span= `${property.locations.length} stops`
+                        p.property__agent-contact
+                            span Contact:  
+                            | #{property.agent.contact || property.agent.email}
                         
 
-                    .card__footer
-                        p
-                            span.card__footer-value= `$${property.price}`
-                        a.btn.btn--green.btn--small(href=`/tour/${property.slug || 'SLUG'}`) Details
+
+                    
+            
+            

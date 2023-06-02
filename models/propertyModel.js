@@ -2,9 +2,7 @@ const mongoose = require("mongoose");
 const slugify = require("slugify");
 // const validator = require("validator");
 
-const alphanumericValidator = (value) => {
-  return /^[a-zA-Z0-9\s]+$/.test(value);
-};
+const alphanumericValidator = (value) => /^[a-zA-Z0-9\s]+$/.test(value);
 
 const propertyTypeCheck = function () {
   return this.type !== "land";
@@ -50,15 +48,16 @@ const propertySchema = new mongoose.Schema({
     default: Date.now(),
     select: false,
   },
-  locations: {
-    city: {
-      type: mongoose.Schema.ObjectId,
-      ref: "City",
+  location: {
+    type: {
+      type: String,
+      default: "Point",
+      enum: ["Point"],
     },
-    state: {
-      type: mongoose.Schema.ObjectId,
-      ref: "State",
-    },
+    coordinates: [Number],
+    address: String,
+    city: String,
+    state: String,
   },
   area: Number,
   type: {
@@ -66,19 +65,32 @@ const propertySchema = new mongoose.Schema({
     enum: ["sell", "shortlet", "rent", "land"],
     required: [true, "Select listing type"],
   },
-  amenities: [
-    {
-      amenity: {
-        type: String,
-        trim: true,
-        enum: ["bed", "bath", "toilet"],
-        required: [propertyTypeCheck, "Select amenities"],
+  amenities: {
+    type: [
+      {
+        amenity: {
+          type: String,
+          trim: true,
+          enum: ["bed", "bath", "toilet"],
+          required: [true, "Select amenities"],
+        },
+        quantity: Number,
       },
-      quantity: Number,
+    ],
+    required: [true, "A property must have amenities"],
+    validate: {
+      validator: function (value) {
+        if (this.type === "land") {
+          // If type is "land", allow an empty array for amenities
+          return value.length === 0;
+        }
+        // For other types, make sure amenities have at least one element
+        return value.length > 0;
+      },
+      message: "Select amenities",
     },
-  ],
-  agents: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
-  brand: [String],
+  },
+  agent: { type: mongoose.Schema.ObjectId, ref: "User" },
   featured: { type: Boolean, default: false },
   tags: [{ type: String, enum: ["new", "furnished"] }],
 });

@@ -15,12 +15,6 @@ const blogSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    subheading: [
-      {
-        title: String,
-        content: String,
-      },
-    ],
     createdAt: {
       type: Date,
       default: Date.now,

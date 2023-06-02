@@ -1,10 +1,17 @@
 header.header
-    .container
-        div.header_content
-            .header__logo
-                img(src="https://www.propertypro.ng/assets/assets/img/home/15b021aacebfb607b0032708293cb00f-logo.svg")
-            nav.nav.nav--properties
-                a.nav__el(href='#') Post A Property
-            nav.nav.nav--user
-                a.nav__el(href='#') Log in
-                a.nav__el.nav__el--cta(href='#') Sign Up
+    div.header__content.container
+        .header__logo
+            img.header__img(src="/img/logo.png", alt="Dreamville logo")
+        nav.nav.nav--properties
+            a.nav__el(href='#') Buy
+            a.nav__el(href='#') Sell
+            a.nav__el(href='#') Rent
+            a.nav__el(href='#') ShortLet
+            a.nav__el(href='/blog') Blog
+            button.nav__el.nav__btn Post A Property
+                span Free
+            if user
+                a.nav__el.nav__btn(href='/login') Logout
+            else
+                a.nav__el.nav__btn(href='/login') Login
+                a.nav__el.nav__btn.nav__btn--cta(href='/signup') Sign Up

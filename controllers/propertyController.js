@@ -1,12 +1,9 @@
-const catchAsync = require("./../utils/catchAsync");
-const { Property, House } = require("../models/propertyModel");
+const catchAsync = require("../utils/catchAsync");
+const Property = require("../models/propertyModel");
+const AppError = require("../utils/appError");
 
 exports.createProperty = catchAsync(async (req, res, next) => {
-  let property;
-  if (req.body.type.toLowerCase() === "land")
-    property = await Property.create(req.body);
-  else if (req.body.type.toLowerCase() === "house")
-    property = await House.create(req.body);
+  const property = await Property.create(req.body);
 
   res.status(201).json({
     status: "success",
@@ -17,7 +14,10 @@ exports.createProperty = catchAsync(async (req, res, next) => {
 });
 
 exports.getProperty = catchAsync(async (req, res, next) => {
-  const property = await Property.find(req.params.id);
+  const property = await Property.find(req.params.id).populate({
+    path: "agent",
+    fields: "name",
+  });
 
   res.status(200).json({
     status: "success",
@@ -28,7 +28,7 @@ exports.getProperty = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllProperty = catchAsync(async (req, res, next) => {
-  const properties = await Property.find({});
+  const properties = await Property.find({}).populate("locations.city");
 
   res.status(200).json({
     status: "success",

@@ -1,5 +1,6 @@
 const catchAsync = require("../utils/catchAsync");
 const User = require("../models/userModel");
+const AppError = require("../utils/appError");
 
 exports.createUser = (req, res) => {
   res.status(500).json({
@@ -44,6 +45,7 @@ exports.updateUser = catchAsync(async (req, res, next) => {
 
 exports.deleteUser = catchAsync(async (req, res, next) => {
   const user = await User.findByIdAndDelete(req.params.id);
+  if (!user) return next(new AppError("No such user", 401));
 
   res.status(204).json({
     status: "success",
