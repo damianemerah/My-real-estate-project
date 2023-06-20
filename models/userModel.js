@@ -38,13 +38,6 @@ const userSchema = new mongoose.Schema({
     },
     default: null,
   },
-  contact: {
-    type: String,
-    required: function () {
-      return this.role === "agent" || this.role === "service";
-    },
-    default: null,
-  },
   password: {
     type: String,
     required: [true, "Please provide a password"],
@@ -77,6 +70,15 @@ userSchema.pre("save", async function (next) {
 
   //hash password
   this.password = await bcrypt.hash(this.password, 12);
+
+  const skippedProperties = ["companyName", "logo"];
+
+  skippedProperties.forEach((prop) => {
+    if (this.isNew && !this[prop]) {
+      // skip validation for new document
+      this.$locals.skipValidation[prop] = true;
+    }
+  });
 
   this.passwordConfirm = undefined;
   next();

@@ -1,13 +1,34 @@
 const express = require("express");
 const propertyController = require("../controllers/propertyController");
+const authController = require("../controllers/authController");
 
 const route = express.Router();
 
-route.get("/", propertyController.getAllProperty);
-route.get("/:id", propertyController.getProperty);
+route.post(
+  "/new",
+  authController.protect,
+  authController.restrictTo("agent", "admin"),
+  propertyController.uploadPropertyImages,
+  propertyController.resizePropertyImages,
+  propertyController.createProperty
+);
 
-route.post("/create", propertyController.createProperty);
-route.delete("/:id", propertyController.deleteProperty);
-route.patch("/:id", propertyController.updateProperty);
+route
+  .get("/:id", propertyController.getProperty)
+  .delete(
+    "/:id",
+    authController.protect,
+    authController.restrictTo("agent", "admin"),
+    propertyController.deleteProperty
+  )
+  .patch(
+    "/:id",
+    authController.protect,
+    authController.restrictTo("agent", "admin"),
+    propertyController.uploadPropertyImages,
+    propertyController.resizePropertyImages,
+    propertyController.updateProperty
+  );
+route.get("/", propertyController.getAllProperty);
 
 module.exports = route;

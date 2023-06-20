@@ -1,5 +1,6 @@
 const path = require("path");
 const express = require("express");
+const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
@@ -23,16 +24,21 @@ app.use((req, res, next) => {
   next();
 });
 
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
+
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: "10kb" }));
-app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+app.use(express.urlencoded({ extended: true, limit: "1000kb" }));
 app.use(cookieParser());
 
 app.use("/", viewRouter);
+
 app.use("/api/v1/users", userRouter);
-app.use("/api/v1/properties", propertyRouter);
-app.use("/api/v1/states", stateRouter);
-app.use("/api/v1/cities", cityRouter);
+app.use("/api/v1/property", propertyRouter);
+app.use("/api/v1/state", stateRouter);
+app.use("/api/v1/city", cityRouter);
 app.use("/api/v1/blog", blogRouter);
 
 app.all("*", (req, res, next) => {
@@ -42,8 +48,3 @@ app.all("*", (req, res, next) => {
 app.use(globalErrorHandler);
 
 module.exports = app;
-
-//location - state- city- description for each
-// Blog
-// Reviews-blog-property-services
-// properties

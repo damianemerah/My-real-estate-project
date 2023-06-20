@@ -562,26 +562,165 @@ var _esTypedArraySetJs = require("core-js/modules/es.typed-array.set.js");
 var _webImmediateJs = require("core-js/modules/web.immediate.js");
 var _runtime = require("regenerator-runtime/runtime");
 var _login = require("./login");
+var _handleFormTag = require("./handleFormTag");
+var _truncateText = require("./truncateText");
+var _handleFormSubmit = require("./handleFormSubmit");
+var _handleImagePreview = require("./handleImagePreview");
 const loginForm = document.querySelector(".form--login");
-const truncateText = (selector, maxLength)=>{
-    const elements = document.querySelectorAll(selector);
-    elements.forEach((element)=>{
-        const text = element.textContent;
-        if (text.length > maxLength) {
-            const truncatedText = text.substring(0, maxLength) + "...";
-            element.textContent = truncatedText;
+const formInputTag = document.querySelector(".tags__field-input");
+const tagList = document.querySelector(".tags__field");
+const propertyForm = document.querySelector(".form__property");
+const propertyFormUpdate = document.querySelector(".form__property-update");
+const logoutBtn = document.querySelector(".nav__btn--logout");
+const imagesBoxList = document.querySelectorAll(".property__images-box");
+const imageCoverInput = document.querySelector(".imageCover-input");
+const imagesInput = document.querySelector(".images-input");
+const imgList = document.querySelectorAll(".property__images-item");
+const deletePropBtn = document.querySelector(".btn-delete__property");
+let selectedImagesList = [];
+let selectedImageCover = "";
+let numImg = 1;
+(0, _truncateText.truncateText)(".blog__card-text", 60);
+// Get images in DB
+if (propertyFormUpdate) {
+    selectedImagesList = selectedImagesList.splice(0);
+    imgList.forEach((img)=>{
+        if (typeof img.src === "string") {
+            const imgStr = img.src.split("/").find((el)=>el.startsWith(`${"property".toLowerCase()}`) && el.length > 15);
+            selectedImagesList.push({
+                img: imgStr,
+                imgNum: numImg
+            });
+            numImg++;
         }
     });
-};
-truncateText(".blog__card-text", 60);
+    selectedImageCover = document.querySelector(".cur__prop-imageCover").src.split("/").find((el)=>el.startsWith(`${"property".toLowerCase()}`) && el.length > 15);
+}
 if (loginForm) loginForm.addEventListener("submit", (e)=>{
     e.preventDefault();
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     (0, _login.login)(email, password);
 });
+if (logoutBtn) logoutBtn.addEventListener("click", (0, _login.logout));
+const fileInput = document.querySelector(".images");
+const selectedFilesContainer = document.querySelector(".selectedFiles");
+if (fileInput) fileInput.addEventListener("change", (event)=>{
+    const files = event.target.files;
+    selectedFilesContainer.innerHTML = "";
+    for(let i = 0; i < files.length; i++){
+        const file = files[i];
+        const fileName = file.name;
+        const fileItem = document.createElement("span");
+        fileItem.textContent = fileName;
+        selectedFilesContainer.appendChild(fileItem);
+    }
+});
+if (formInputTag) formInputTag.addEventListener("keyup", (event)=>{
+    (0, _handleFormTag.handleFormTag)(event);
+});
+if (tagList) tagList.addEventListener("click", (e)=>{
+    const target = e.target.closest(".chec-tag__dismiss");
+    if (target) {
+        const el = target.closest(".tags__field-tag");
+        el.remove();
+    }
+});
+if (deletePropBtn) deletePropBtn.addEventListener("click", (e)=>{
+    e.preventDefault();
+    (0, _handleFormSubmit.deleteProperty)();
+});
+if (propertyForm) propertyForm.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    const imgList = selectedImagesList.map((el)=>el.img || el.imgObj);
+    const form = (0, _handleFormSubmit.formFields)(selectedImageCover, imgList);
+    (0, _handleFormSubmit.addProperty)(form, "new");
+});
+if (propertyFormUpdate) propertyFormUpdate.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    const imgList = selectedImagesList.map((el)=>el.img || el.imgObj);
+    const form = (0, _handleFormSubmit.formFields)(selectedImageCover, imgList);
+    for (const [key, value] of form.entries())console.log(key, value);
+    (0, _handleFormSubmit.addProperty)(form, "update");
+});
+if (propertyForm || propertyFormUpdate) {
+    const propertyType = document.querySelector(".type");
+    const amenitiesField = document.querySelector(".amenities");
+    propertyType.addEventListener("change", ()=>{
+        console.log(amenitiesField);
+        if (propertyType.value.toLowerCase() === "land") amenitiesField.style.display = "none";
+        else amenitiesField.style.display = "block";
+    });
+    imagesBoxList.forEach((imagesBox)=>{
+        imagesBox.addEventListener("mouseover", (e)=>{
+            const target = e.target.closest(".property__images");
+            if (target) {
+                const delBtn = target.querySelector(".property__img-delete");
+                delBtn.style.display = "block";
+            }
+        });
+        imagesBox.addEventListener("mouseout", (event)=>{
+            const target = event.target.closest(".property__images");
+            if (target) {
+                const delBtn = target.querySelector(".property__img-delete");
+                delBtn.style.display = "none";
+            }
+        });
+        imagesBox.addEventListener("click", (event)=>{
+            const target = event.target.closest(".property__img-delete");
+            if (target) {
+                const elem = target.closest(".property__images");
+                const img = target.parentElement.querySelector("img");
+                if (img.src.startsWith("http")) {
+                    // Handle existing image URL
+                    if (img.classList.contains("cur__prop-imageCover")) {
+                        console.log(selectedImageCover);
+                        selectedImageCover = "";
+                    } else {
+                        const itemIndex = selectedImagesList.findIndex((el)=>el.img === img.src.split("/").find((el)=>el.startsWith(`${"property".toLowerCase()}`) && el.length > 15));
+                        if (itemIndex !== -1) selectedImagesList.splice(itemIndex, 1);
+                    }
+                } else {
+                    // Handle file preview images
+                    const imgNum = +img.dataset.imagenum;
+                    const itemIndex = selectedImagesList.findIndex((el)=>el.imgNum === imgNum);
+                    selectedImagesList.splice(itemIndex, 1);
+                }
+                elem.remove();
+            }
+        });
+    });
+    imageCoverInput.addEventListener("change", (e)=>{
+        const selectedFile = e.target.files[0];
+        selectedImageCover = selectedFile;
+        const previewContainer = document.querySelector(".property__images-box--imageCover");
+        (0, _handleImagePreview.handleImagePreview)(previewContainer, selectedImageCover);
+        imageCoverInput.value = "";
+    });
+    //images
+    imagesInput.addEventListener("change", (e)=>{
+        let currentNumImg = numImg;
+        const list = selectedImagesList.filter((el)=>"imgObj" in el).map((el)=>el.imgObj.name);
+        const selectedFiles = [
+            ...e.target.files
+        ];
+        const filteredFile = selectedFiles.filter((el)=>!list.includes(el.name));
+        console.log(filteredFile);
+        filteredFile.forEach((el)=>{
+            selectedImagesList.push({
+                imgObj: el,
+                imgNum: numImg
+            });
+            numImg++;
+        });
+        console.log(selectedImagesList);
+        const previewContainer = document.querySelector(".property__images-box-images");
+        (0, _handleImagePreview.handleImagePreview)(previewContainer, filteredFile, currentNumImg);
+        imagesInput.value = "";
+    });
+}
 
-},{"regenerator-runtime/runtime":"cDAES","core-js/modules/es.regexp.flags.js":"azdjA","core-js/modules/es.typed-array.set.js":"b0iRR","core-js/modules/web.immediate.js":"3pRoj","./login":"aUJqG"}],"cDAES":[function(require,module,exports) {
+},{"regenerator-runtime/runtime":"cDAES","core-js/modules/es.regexp.flags.js":"azdjA","core-js/modules/es.typed-array.set.js":"b0iRR","core-js/modules/web.immediate.js":"3pRoj","./login":"aUJqG","./handleFormTag":"cAvSW","./truncateText":"kTXqU","./handleFormSubmit":"7AHMc","./handleImagePreview":"fTUK3"}],"cDAES":[function(require,module,exports) {
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  *
@@ -2897,9 +3036,10 @@ module.exports = function(scheduler, hasTimeArg) {
 /* global Bun -- Deno case */ module.exports = typeof Bun == "function" && Bun && typeof Bun.version == "string";
 
 },{}],"aUJqG":[function(require,module,exports) {
-/* eslint-disable */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "login", ()=>login);
+parcelHelpers.export(exports, "logout", ()=>logout);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alert = require("./alert");
@@ -2921,6 +3061,22 @@ const login = async (email, password)=>{
         }
     } catch (err) {
         (0, _alert.showAlert)("error", err.response.data.message);
+    }
+};
+const logout = async ()=>{
+    try {
+        const res = await (0, _axiosDefault.default)({
+            method: "GET",
+            url: "http://127.0.0.1:3000/api/v1/users/logout"
+        });
+        res.data.status = "success";
+        window.setTimeout(()=>{
+            location.reload(true);
+            location.assign("/");
+        }, 1000);
+    //true` force a reload from server
+    } catch (err) {
+        (0, _alert.showAlert)("error", "Error logging out! Try again.");
     }
 };
 
@@ -7096,8 +7252,180 @@ const showAlert = (type, msg)=>{
     hideAlert();
     const markup = `<div class="alert alert--${type}">${msg}</div>`;
     document.querySelector("body").insertAdjacentHTML("afterbegin", markup);
-    window.setTimeout(hideAlert, 5000);
+    window.setTimeout(hideAlert, 15000);
 };
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"fofuL"}],"cAvSW":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "handleFormTag", ()=>handleFormTag);
+const formInputTag = document.querySelector(".tags__field-input");
+const formList = document.querySelector(".tags__field");
+function handleFormTag(event) {
+    if (event.key === "," || event.code === "Comma" || event.code === "Unidentified") {
+        formInputTag.value.split(",").map((tag)=>tag.trim()).forEach((el)=>{
+            if (el !== "") {
+                // Skip empty tags
+                const markup = `
+              <li class="tags__field-tag">
+                  <span class="chec-tag">
+                    ${el}
+                  </span>
+                  <button type="button" title="Dismiss" class="chec-tag__dismiss">
+                          X
+                  </button>
+              </li>
+              `;
+                formList.insertAdjacentHTML("beforeend", markup);
+            }
+        });
+        formInputTag.value = "";
+    }
+    if (event.key === "Delete" || event.key === "Backspace") {
+        const list = document.querySelector("#tags__field");
+        const lastEl = list.children[list.children.length - 1];
+        if (lastEl) lastEl.remove();
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"fofuL"}],"kTXqU":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "truncateText", ()=>truncateText);
+const truncateText = (selector, maxLength)=>{
+    const elements = document.querySelectorAll(selector);
+    elements.forEach((element)=>{
+        const text = element.textContent;
+        const fileInput = document.querySelector(".images");
+        const selectedFilesContainer = document.querySelector(".selectedFiles");
+        if (fileInput) fileInput.addEventListener("change", (event)=>{
+            selectedFilesContainer.innerHTML = "";
+            const files = event.target.files;
+            for(let i = 0; i < files.length; i++){
+                const file = files[i];
+                const fileName = file.name;
+                const fileItem = document.createElement("span");
+                fileItem.textContent = fileName;
+                selectedFilesContainer.appendChild(fileItem);
+            }
+        });
+        if (text.length > maxLength) {
+            const truncatedText = text.substring(0, maxLength) + "...";
+            element.textContent = truncatedText;
+        }
+    });
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"fofuL"}],"7AHMc":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "formFields", ()=>formFields);
+parcelHelpers.export(exports, "addProperty", ()=>addProperty);
+parcelHelpers.export(exports, "deleteProperty", ()=>deleteProperty);
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _alert = require("./alert");
+const formFields = (imageCover, imageList)=>{
+    const form = new FormData();
+    const location = {
+        state: document.querySelector(".location-state").value,
+        city: document.querySelector(".location-city").value
+    };
+    const tags = [
+        ...document.querySelectorAll(".chec-tag")
+    ].map((el)=>el.textContent.trim());
+    form.append("name", document.querySelector(".name").value);
+    form.append("price", +document.querySelector(".price").value.trim());
+    form.append("priceDiscount", +document.querySelector(".priceDiscount").value.trim());
+    form.append("description", document.querySelector(".description").value.trim());
+    form.append("area", document.querySelector(".area").value.trim());
+    form.append("type", document.querySelector(".type").value.trim());
+    tags.forEach((tag)=>form.append("tags", tag));
+    form.append("location", JSON.stringify(location));
+    form.append("imageCover", imageCover);
+    for(let i = 0; i < imageList.length; i++)form.append("images", imageList[i]);
+    return form;
+};
+const addProperty = async (data, type)=>{
+    try {
+        if (document.querySelector(".type").value.trim().toLowerCase() !== "land") {
+            const amenities = [
+                {
+                    amenity: `${type === "new" ? "bed" : document.querySelector(".amenity-bed").dataset.amenity}`,
+                    quantity: +document.querySelector(".quantity-bed").value.trim()
+                },
+                {
+                    amenity: `${type === "new" ? "bath" : document.querySelector(".amenity-bath").dataset.amenity}`,
+                    quantity: +document.querySelector(".quantity-bath").value.trim()
+                },
+                {
+                    amenity: `${type === "new" ? "toilet" : document.querySelector(".amenity-toilet").dataset.amenity}`,
+                    quantity: +document.querySelector(".quantity-toilet").value.trim()
+                }
+            ];
+            data.append("amenities", JSON.stringify(amenities));
+        } else data.append("amenities", JSON.stringify([]));
+        console.log(data.get("amenities"));
+        const id = window.location.pathname.split("/").find((el)=>el.length > 11 && (el !== "property" || el !== "update"));
+        const url = type === "new" ? "http://127.0.0.1:3000/api/v1/property/new" : `http://127.0.0.1:3000/api/v1/property/${id}`;
+        const res = await (0, _axiosDefault.default)({
+            method: type === "new" ? "POST" : "PATCH",
+            url,
+            data
+        });
+        if (res.data.status === "success") {
+            (0, _alert.showAlert)("success", "Updated Successfully");
+            setTimeout(()=>{
+                window.location.assign(`/property/${res.data.data.data._id}`);
+            }, 3000);
+        }
+    } catch (err) {
+        (0, _alert.showAlert)("error", err.response.data.message);
+    }
+};
+const deleteProperty = async ()=>{
+    try {
+        const id = window.location.pathname.split("/").find((el)=>el.length > 11 && (el !== "property" || el !== "update"));
+        const url = `http://127.0.0.1:3000/api/v1/property/${id}`;
+        const res = await (0, _axiosDefault.default)({
+            url,
+            method: "DELETE"
+        });
+        if (res.data.status === "success") {
+            window.location.reload();
+            setTimeout(()=>{
+                window.location.assign("/");
+            }, 3000);
+        }
+    } catch (err) {
+        (0, _alert.showAlert)("error", err.response.data.message);
+    }
+};
+
+},{"axios":"5vw73","./alert":"8F2M5","@parcel/transformer-js/src/esmodule-helpers.js":"fofuL"}],"fTUK3":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "handleImagePreview", ()=>handleImagePreview);
+function handleImagePreview(previewContainer, files, numImg) {
+    if (previewContainer.classList.contains("property__images-box--imageCover")) {
+        const reader = new FileReader();
+        reader.onload = (e)=>{
+            const img = `<div class="property__images property__images-imageCover"><img class="cur__prop-img cur__prop-imageCover" src="${e.target.result}"><button class="property__img-delete" style="display: none;">Delete</button></div>`;
+            previewContainer.innerHTML = "";
+            previewContainer.insertAdjacentHTML("beforeend", img);
+        };
+        reader.readAsDataURL(files);
+    }
+    if (previewContainer.classList.contains("property__images-box-images")) for(let i = 0; i < files.length; i++){
+        const file = files[i];
+        const reader = new FileReader();
+        reader.onload = (e)=>{
+            const img = `<div class="property__images property__images-event property__images-list"><img class="cur__prop cur__prop-img property__images-item" data-imagenum="${numImg + i}" src="${e.target.result}"><button class="property__img-delete">Delete</button></div>`;
+            previewContainer.insertAdjacentHTML("beforeend", img);
+        };
+        reader.readAsDataURL(file);
+    }
+}
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"fofuL"}]},["4ZjYh","fSlqf"], "fSlqf", "parcelRequire4d62")
 

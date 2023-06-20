@@ -11,6 +11,12 @@ const handleDuplicateFieldsDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleMulterError = (err) => {
+  if (error instanceof multer.MulterError) {
+    console.log("🔥🔥🔥🔥🔥🔥🔥🔥🔥");
+  }
+};
+
 const handleValidationErrorDB = (err) => {
   const errors = Object.values(err.errors).map((el) => el.message);
   const message = `Invalid input data, ${errors.join(". ")}`;
@@ -24,23 +30,22 @@ const handleJWTError = () =>
 const handleJWTExpiredToken = () =>
   new AppError("Your token has expired, please log in again");
 
-const sendErrorDev = (err, req, res) => {
+const sendErrorDev = (err, req, res) =>
   // API
-  if (req.originalUrl.startsWith("/api")) {
-    return res.status(err.statusCode).json({
-      status: err.status,
-      error: err,
-      message: err.message,
-      stack: err.stack,
-    });
-  }
-
-  //RENDERED WEBSITE
-  return res.status(err.statusCode).render("error", {
-    title: "Something went wrong!",
-    msg: err.message,
+  // if (req.originalUrl.startsWith("/api")) {
+  res.status(err.statusCode).json({
+    status: err.status,
+    error: err,
+    message: err.message,
+    stack: err.stack,
   });
-};
+// }
+
+//RENDERED WEBSITE
+// return res.status(err.statusCode).render("error", {
+//   title: "Something went wrong!",
+//   msg: err.message,
+// });
 
 const sendErrorProd = (err, req, res) => {
   //A) API
@@ -86,6 +91,7 @@ module.exports = (err, req, res, next) => {
     error.name = err.name;
     error.message = err.message;
 
+    console.log(error);
     if (error.name === "CastError") error = handleCastErrorDB(error);
     if (error.name === 11000) error = handleDuplicateFieldsDB(error);
     if (error.name === "ValidationError")

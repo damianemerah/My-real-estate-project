@@ -25,6 +25,9 @@ mongoose
   })
   .then(() => {
     console.log("DB CONNECTED");
+  })
+  .catch((err) => {
+    console.log(err);
   });
 
 const port = process.env.PORT || 5000;

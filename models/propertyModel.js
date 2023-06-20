@@ -23,16 +23,14 @@ const propertySchema = new mongoose.Schema({
   price: {
     type: Number,
     required: [true, "A property must have price"],
-  },
-  priceDiscount: {
-    type: Number,
     validate: {
       validator: function (val) {
-        return val < this.price;
+        return val >= 0;
       },
-      message: "Discount price ({VALUE}) should be below this regular price",
+      message: "Price ({VALUE}) must be greater than or equal to zero",
     },
   },
+  priceDiscount: Number,
   description: {
     type: String,
     trim: true,
@@ -54,12 +52,19 @@ const propertySchema = new mongoose.Schema({
       default: "Point",
       enum: ["Point"],
     },
-    coordinates: [Number],
-    address: String,
+    street: String,
     city: String,
     state: String,
   },
-  area: Number,
+  area: {
+    type: Number,
+    required: [
+      function () {
+        return this.type === "land";
+      },
+      "Area required for type (Land)",
+    ],
+  },
   type: {
     type: String,
     enum: ["sell", "shortlet", "rent", "land"],
@@ -71,28 +76,32 @@ const propertySchema = new mongoose.Schema({
         amenity: {
           type: String,
           trim: true,
-          enum: ["bed", "bath", "toilet"],
-          required: [true, "Select amenities"],
+          enum: ["bed", "bath", "toilet", "beds", "baths", "toilets"],
+          required: function () {
+            return this.type !== "land";
+          },
         },
-        quantity: Number,
+        quantity: {
+          type: Number,
+          required: function () {
+            return this.type !== "land";
+          },
+          validate: {
+            validator: function (val) {
+              return val >= 0;
+            },
+            message: "Quantity must be greater than or equal to zero",
+          },
+        },
       },
     ],
-    required: [true, "A property must have amenities"],
-    validate: {
-      validator: function (value) {
-        if (this.type === "land") {
-          // If type is "land", allow an empty array for amenities
-          return value.length === 0;
-        }
-        // For other types, make sure amenities have at least one element
-        return value.length > 0;
-      },
-      message: "Select amenities",
+    required: function () {
+      return this.type !== "land";
     },
   },
   agent: { type: mongoose.Schema.ObjectId, ref: "User" },
   featured: { type: Boolean, default: false },
-  tags: [{ type: String, enum: ["new", "furnished"] }],
+  tags: [String],
 });
 
 propertySchema.pre("save", function (next) {
@@ -105,10 +114,18 @@ propertySchema.pre("save", function (next) {
 });
 
 propertySchema.pre("save", function (next) {
+  if (this.priceDiscount && this.priceDiscount > this.price) {
+    const error = new Error("Discount price should be below the regular price");
+    return next(error);
+  }
+  next();
+});
+
+propertySchema.pre("save", function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
 
-const Property = mongoose.model("Property", propertySchema);
+const Property = mongoose.model("Property", propertySchema, "Property");
 
 module.exports = Property;

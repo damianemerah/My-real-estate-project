@@ -1,17 +1,20 @@
 header.header
     div.header__content.container
         .header__logo
-            img.header__img(src="/img/logo.png", alt="Dreamville logo")
+            a(href="/")
+                img.header__img(src="/img/logo.png", alt="Dreamville logo")
         nav.nav.nav--properties
             a.nav__el(href='#') Buy
             a.nav__el(href='#') Sell
             a.nav__el(href='#') Rent
             a.nav__el(href='#') ShortLet
             a.nav__el(href='/blog') Blog
-            button.nav__el.nav__btn Post A Property
-                span Free
+            if (user)
+                if (user.role === 'agent' || user.role === 'admin')
+                    a(href="/property/new").nav__el.nav__btn Post A Property
+                        span Free
             if user
-                a.nav__el.nav__btn(href='/login') Logout
+                a.nav__el.nav__btn.nav__btn--logout Logout
             else
                 a.nav__el.nav__btn(href='/login') Login
                 a.nav__el.nav__btn.nav__btn--cta(href='/signup') Sign Up

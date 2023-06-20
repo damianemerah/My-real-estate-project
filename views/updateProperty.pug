@@ -1,0 +1,84 @@
+extends base
+
+
+
+
+block content 
+    main.container.new-property 
+        form.form__property-update
+
+            .form__group
+                label.form__label(for="update-name") Name:
+                input.form__input.name(type="text", id="update-name", name="name",value=`${property.name}`, required)
+
+            .form__group
+                label.form__label(for="update-price") Price:
+                input.form__input.price(type="number", id="update-price", name="price", value=`${property.price}`, required)
+
+            .form__group
+                label.form__label(for="update-priceDiscount") Price Discount:
+                input.form__input.priceDiscount(type="number", id="update-priceDiscount", name="priceDiscount", value=`${property.priceDiscount}`)
+
+            .form__group
+                label.form__label(for="update-description") Description:
+                textarea.form__input.description(id="update-description", name="description", required)= property.description
+            .update__box
+                .property__images-box.property__images-box--imageCover
+                    .property__images.property__images-imageCover
+                        img.cur__prop-img.cur__prop-imageCover(src=`/img/properties/${property.imageCover}`)
+                        button(class="property__img-delete") Delete
+                .form__group.property__imageCover-input
+                    label.form__label(for="update-imageCover") Image Cover:
+                    input.form__input.imageCover-input(type="file", id="update-imageCover", name="imageCover", accept='image/*')
+            .update__box
+                if property.images
+                .property__images-box.property__images-box-images
+                    each img in property.images
+                        .property__images.property__images-list
+                            img.cur__prop-img.property__images-item(src=`/img/properties/${img}`)
+                            button(class="property__img-delete") Delete
+                .form__group
+                    .form__label(for="update-images") Additional Images:
+                    input.form__input.images-input(type="file",accept='image/*', id="update-images", name="images", multiple="true")
+            .form__group
+                h4.form__label Location:
+                .form__flex.form__flex-mb
+                    input.form__input.location-state(type="text", id="update-location-state", name="location",value=`${property.location.state}`, placeHolder="State", required)
+                    input.form__input.location-city(type="text",placeHolder="City", id="update-location-city", name="location",value=`${property.location.city}`, required)
+                .form__flex
+                    input.form__input.location-address(type="text", id="update-location-address", name="location",value=`${property.location.address}`, placeHolder="Address")
+            .form__group
+                .form__label(for="update-area") Area:
+                input.form__input.area(type="number", id="update-area", name="area",value=`${property.area}`, placeHolder="In sqft")
+            .form__group
+                .form__label(for="update-type") Type:
+                select.form__input.type(id="update-type", name="type", required)
+                    option(value="sell", selected=(property.type === 'sell')) Sell
+                    option(value="shortlet", selected=(property.type === 'shortlet')) Shortlet
+                    option(value="rent", selected=(property.type === 'rent')) Rent
+                    option(value="land", selected=(property.type === 'land')) Land
+            .form__group.amenities
+                h4.form__label Amenities:
+                - let uppercasedItem
+                - const amenityArr = ['bed', 'bath', 'toilet']
+                each item, index in property.amenities
+                    - uppercasedItem = item.amenity.charAt(0).toUpperCase() + item.amenity.slice(1)
+                    .form__flex(for="update-amenities")
+                        .form__flex
+                            p(class=`form__input amenity-${amenityArr[index]}` data-amenity=`${item.amenity}`)= uppercasedItem
+                        .form__item 
+                            input(class=`form__input quantity-${amenityArr[index]}`, type="number", placeHolder="Quantity", value=`${item.quantity}`, id=`update-quantity-${uppercasedItem}`)
+            .form__group
+                h4.form__label Tags:
+                .tags__field-box
+                    ul.tags__field
+                        each tag in property.tags
+                            li.tags__field-tag
+                                span.chec-tag= tag
+                                button(type="button" title="Dismiss" class="chec-tag__dismiss") X
+                    .tags__field-item
+                        input.form__input.tags__field-input(type="text", placeHolder="furnished, new,...")
+
+
+            button.btn(type="submit") Update Property
+        button.btn.btn-delete__property(type="button") Delete Property

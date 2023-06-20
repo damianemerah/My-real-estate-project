@@ -1,0 +1,73 @@
+extends base
+
+block content 
+    main.container.new-property 
+        form.form__property
+            .form__group
+                label.form__label(for="name") Name:
+                input.form__input.name(type="text", id="name", name="name", required)
+            .form__group
+                label.form__label(for="price") Price:
+                input.form__input.price(type="number", id="price", name="price", required)
+            .form__group
+                label.form__label(for="priceDiscount") Price Discount:
+                input.form__input.priceDiscount(type="number", id="priceDiscount", name="priceDiscount")
+            .form__group
+                label.form__label(for="description") Description:
+                textarea.form__input.description( name="description",id="description", required)
+            .update-box
+                .property__images-box.property__images-box--imageCover
+                .form__group
+                    label.form__label(for="imageCover") Image Cover:
+                    input.form__input.imageCover-input(type="file", name="imageCover", accept='image/*',id="imageCover")
+            .update__box
+                .property__images-box.property__images-box-images
+                .form__group
+                    .form__label(for="images") Additional Images:
+                    input.form__input.images-input(type="file",accept='image/*', name="images",id="images", multiple="true")
+            .form__group
+                h4.form__label Location:
+                .form__flex.form__flex-mb
+                    input.form__input.location-state(type="text", id="location-state", name="location", placeHolder="State", required)
+                    input.form__input.location-city(type="text",placeHolder="City", id="location-city", name="location", required)
+                .form__flex
+                    input.form__input(type="text", id="location-address", name="location", placeHolder="Address")
+                    .form__flex
+                        input.form__input(type="number",placeHolder="Longitude", id="location-lng", name="location")
+                        input.form__input(type="number",placeHolder="Latitude", id="location-lat", name="location")
+            .form__group
+                .form__label(for="area") Area:
+                input.form__input.area(type="number", name="area", placeHolder="In sqft")
+            .form__group
+                .form__label(for="type") Type:
+                select.form__input.type( name="type", required)
+                    option(value="sell") Sell
+                    option(value="shortlet") Shortlet
+                    option(value="rent") Rent
+                    option(value="land") Land
+            .form__group.amenities
+                h4.form__label Amenities:
+                .form__flex(for="amenities")
+                    .form__flex
+                        p.form__input(data-amenity="bed") Bed
+                    .form__item 
+                        input.form__input.quantity-bed(type="number", placeHolder="Quantity", value="1" )
+                .form__flex(for="amenities")
+                    .form__flex
+                        p.form__input(data-amenity="bath") Bath
+                    .form__item 
+                        input.form__input.quantity-bath(type="number", placeHolder="Quantity", value="1")
+                .form__flex(for="amenities")
+                    .form__flex
+                        p.form__input(data-amenity="toilet") Toilet
+                    .form__item 
+                        input.form__input.quantity-toilet(type="number", placeHolder="Quantity", value="1" )
+            .form__group
+                h4.form__label Tags:
+                .tags__field-box
+                    ul.tags__field
+                    .tags__field-item
+                        input.form__input.tags__field-input(type="text", placeHolder="furnished, new,...")
+
+
+            button.btn(type="submit") Post Property

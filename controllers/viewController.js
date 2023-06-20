@@ -5,7 +5,7 @@ const catchAsync = require("../utils/catchAsync");
 const { Blog } = require("../models/blogModel");
 
 exports.getOverview = catchAsync(async (req, res, next) => {
-  const properties = await Property.find();
+  const properties = await Property.find().populate("agent");
   const blogs = await Blog.find();
 
   res.status(200).render("overview", {
@@ -48,5 +48,26 @@ exports.getBlog = catchAsync(async (req, res, next) => {
 exports.getLogin = (req, res) => {
   res.status(200).render("login", {
     title: "Login to your account",
+  });
+};
+
+exports.newProperty = (req, res) => {
+  res.status(200).render("newProperty", {
+    title: "New property",
+  });
+};
+
+exports.updatePropertyView = catchAsync(async (req, res) => {
+  const property = await Property.findById(req.params.id);
+
+  res.status(200).render("updateProperty", {
+    title: property.name,
+    property,
+  });
+});
+
+exports.getErrorPage = (req, res) => {
+  res.status(404).render("404", {
+    title: "Page Not Found",
   });
 };

@@ -425,7 +425,17 @@ a:visited {
   }
 
   &__price {
-    font-size: 2.4rem;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.8rem;
+
+    .current-price {
+      font-size: 2.4rem;
+    }
+
+    .prev-price {
+      text-decoration: line-through;
+    }
   }
 
   &__content {
@@ -447,7 +457,6 @@ a:visited {
     width: 70rem;
     height: 70rem;
     margin: 0 auto;
-    margin-bottom: 1.6rem;
   }
 
   &__img {
@@ -459,8 +468,10 @@ a:visited {
   }
 
   &__images-box {
-    display: flex;
+    display: inline-flex;
+    flex-wrap: wrap;
     overflow: hidden;
+    margin-top: 1.6rem;
 
     & > *:not(:last-child) {
       margin-right: 0.6rem;
@@ -474,9 +485,8 @@ a:visited {
 
   &__images {
     width: 12rem;
-    height: 12rem;
     min-width: 12rem;
-    min-height: 12rem;
+    position: relative;
   }
 
   &__images-item {
@@ -528,6 +538,14 @@ a:visited {
     span {
       font-weight: bold;
     }
+  }
+
+  &__img-delete {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 }
 
@@ -617,4 +635,105 @@ a:visited {
 }
 .alert--error {
   background-color: #eb4d4b;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.new-property {
+  max-width: 100rem;
+  margin: 4rem auto;
+}
+
+.form__flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &-mb {
+    margin-bottom: 2rem;
+  }
+  & > *:not(:last-child) {
+    margin-right: 1.5rem;
+  }
+
+  label {
+    font-size: 1.4rem;
+  }
+}
+
+.form__group {
+  input[type="checkbox"] {
+    transform: scale(1.4);
+  }
+}
+
+.amenities {
+  & > * {
+    margin-bottom: 1.4rem;
+  }
+}
+.tags__field-box {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  background-color: #f2f2f2;
+}
+
+.tags__field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 0.5rem 0.5rem 0 0.5rem;
+  text-decoration: none;
+  list-style: none;
+
+  & > * {
+    margin-right: 0.4rem;
+  }
+
+  &-tag {
+    display: flex;
+    align-items: center;
+    padding: 0.2rem 0.4rem;
+    border: 1.3px solid #00000f;
+    border-radius: 0.5rem;
+
+    .chec-tag {
+      font-size: 1.2rem;
+      font-weight: bold;
+
+      &__dismiss {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 0.5rem;
+        font-weight: bold;
+        height: 1rem;
+        width: 1rem;
+        border-radius: 50%;
+        padding: 0.4rem;
+        margin-left: 0.25rem;
+      }
+    }
+  }
+}
+
+.tags__field-item {
+  flex: 1;
+  min-width: 200px;
+}
+
+.cur__prop-imageCover {
+  width: 100%;
+}
+
+input[type="file"] {
+  color: transparent !important;
 }

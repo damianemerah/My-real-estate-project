@@ -1,22 +1,36 @@
 extends base
 
+
 block content
     main.main
-        .container.property
+        - const formattedPrice = price => price.toLocaleString("en-NG", { style: "currency", currency: "NGN", minimumFractionDigits: 0 });
+        .container
+        .property
+            if (user.role === "agent")
+                h4
+                    a(href=`/property/${property.id}/update`) Update Property
             .property__content
                 .property__name-box
                     p.property__name= property.name
                     .property__details 
-                        p.property__location= property.location.address
-                        p.property__price= `N${property.price}`
+                        p.property__location= `${property.location.state} ${property.location.city}`
+                        if !property.priceDiscount
+                            .property__price
+                            p Price:
+                                span.current-price= formattedPrice(property.price)
+                        if property.priceDiscount
+                            .property__price 
+                                p Discount Price: 
+                                    span.current-price= formattedPrice(property.priceDiscount)
+                                span.prev-price= formattedPrice(property.price)
                 .property__detail 
                     .property__img-box
-                        img.property__img(src=`${property.imageCover}`)
+                        img.property__img(src=`/img/properties/${property.imageCover}`)
                     .property__images-container
                         .property__images-box
                             each img in property.images
                                 .property__images
-                                    img.property__images-item(src=`${img}`)
+                                    img.property__images-item(src=`/img/properties/${img}`)
                 .property__features
                     .property__amenities 
                         h2.section__title Key Features 
@@ -36,17 +50,16 @@ block content
             .property__side
                 .property__agent-details
                     .property__agent
-                        if property.agent.logo
+                        if property.agent && property.agent.logo
                             img.property__agent-logo(src=`${property.agent.logo}`, alt=`${property.agent.companyName}`)
-                        if property.agent.companyName
+                        if property.agent && property.agent.companyName
                             p.property__agent-company= property.agent.companyName
-                        p.property__agent-name
-                            span Agent: 
-                            | #{property.agent.name}
+                            p.property__agent-name
+                                span Agent: 
+                                | #{property.agent.name}
 
                         p.property__agent-contact
-                            span Contact:  
-                            | #{property.agent.contact || property.agent.email}
+                            span= `Contact: ${property.agent.email}`
                         
 
 

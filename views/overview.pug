@@ -2,22 +2,8 @@ extends base
 
 block content
     header.hero
-        - console.log(user)
             .hero__image
-                picture(data-lazy="force-loaded")
-                    source(srcset=`https://static.rdc.moveaws.com/images/hero/default/2021-11/webp/hp-hero-mobile.webp,
-                        https://static.rdc.moveaws.com/images/hero/default/2021-11/webp/hp-hero-mobile-2x.webp 2x`, media="(max-width: 767px)", type="image/webp")
-                    source(srcset=`https://static.rdc.moveaws.com/images/hero/default/2021-11/webp/hp-hero-tablet.webp,
-                        https://static.rdc.moveaws.com/images/hero/default/2021-11/webp/hp-hero-tablet-2x.webp 2x`, media="(min-width: 768px) and (max-width: 995px)", type="image/webp")
-                    source(srcset=`https://static.rdc.moveaws.com/images/hero/default/2021-11/webp/hp-hero-desktop.webp,
-                        https://static.rdc.moveaws.com/images/hero/default/2021-11/webp/hp-hero-desktop-2x.webp 2x`, media="(min-width: 996px) and (max-width: 1279px)", type="image/webp")
-                    source(srcset=`https://static.rdc.moveaws.com/images/hero/default/2021-11/webp/hp-hero-desktop-xl.webp,
-                        https://static.rdc.moveaws.com/images/hero/default/2021-11/webp/hp-hero-desktop-xl-2x.webp 2x`, media="(min-width: 1280px)", type="image/webp")
-                    img(alt="realtor.com for sale home page", src="https://static.rdc.moveaws.com/images/hero/default/2021-11/jpg/hp-hero-desktop.jpg", srcset=`
-                        https://static.rdc.moveaws.com/images/hero/default/2021-11/jpg/hp-hero-mobile.jpg 480w,
-                        https://static.rdc.moveaws.com/images/hero/default/2021-11/jpg/hp-hero-tablet.jpg 768w,
-                        https://static.rdc.moveaws.com/images/hero/default/2021-11/jpg/hp-hero-desktop.jpg 996w,
-                        https://static.rdc.moveaws.com/images/hero/default/2021-11/jpg/hp-hero-desktop-xl.jpg 1280w`, role="presentation")
+                img(src="https://static.rdc.moveaws.com/images/hero/default/2021-11/jpg/hp-hero-desktop.jpg")
             form.hero__form.container(action="post")
                 h1 Find your next home.
                 p Let’s find a home that’s perfect for you
@@ -41,15 +27,14 @@ block content
                     if property.featured
                         a(href=`/property/${property.id}`).feature__card
                             .feature__card-img-box
-                                img.feature__card-img(src=`${property.imageCover}`)
+                                img.feature__card-img(src=`/img/properties/${property.imageCover}`)
                                 .overlay
                             .feature__card-detail
                                 h4.feature__card-detail-name= property.name
                                 h5.feature__card-detail-location= `${property.location.city}, ${property.location.state}`
                                 p.feature__card-detail-price= `N${property.price}`
-                                .feature__card-detail-company
-                                    img.feature__card-detail-company-item(src='/img/logo-green.png')
-                                    img.feature__card-detail-company-item(src='/img/logo-green.png')
+                               
+                                
 
     section.service
         .container
