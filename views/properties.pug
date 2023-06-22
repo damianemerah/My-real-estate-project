@@ -1,0 +1,34 @@
+extends base
+
+block content
+    - const formattedPrice = price => price.toLocaleString("en-NG", { style: "currency", currency: "NGN", minimumFractionDigits: 0 });
+    section.container
+        form.form__filters
+            .form__group
+                label.form__label(for='filter__price') Name
+                input#filter__price.form__input(type='number', placeholder='Price', name="price[gte]", value="1")
+            .form__group
+                label.form__label(for="filter__type") Type:
+                select.form__input#filter__type( name="type", required)
+                    option(value="land") Land
+                    option(value="shortlet") Shortlet
+                    option(value="sell") Selling
+                    option(value="rent") Rent
+            .form__group
+                button.btn.btn--login Filter
+        .properties
+            each property in properties
+                .feature__card
+                    a(href=`/property/${property.id}`).feature__card-img-box
+                        img.feature__card-img(src=`/img/properties/${property.imageCover}`)
+                        .overlay
+                    .feature__card-detail-box
+                        .feature__card-detail
+                            h4.feature__card-detail-name= property.name
+                            h5.feature__card-detail-location= `${property.location.city}, ${property.location.state}`
+                            p.feature__card-detail-price= formattedPrice(property.price)
+                            p.feature__card-detail-type= property.type
+                        if (user && user.bookmark && user.bookmark.includes(property.id))
+                            span(class="bookmark active material-symbols-sharp") bookmark
+                        else 
+                            span(class="bookmark material-symbols-sharp") bookmark

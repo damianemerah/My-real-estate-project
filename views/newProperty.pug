@@ -1,8 +1,9 @@
 extends base
 
 block content 
-    main.container.new-property 
-        form.form__property
+    main.container.new-property
+        - console.log(11111, user) 
+        form.form__property(data-id=user.id)
             .form__group
                 label.form__label(for="name") Name:
                 input.form__input.name(type="text", id="name", name="name", required)

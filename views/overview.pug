@@ -1,6 +1,7 @@
 extends base
 
 block content
+    - const formattedPrice = price => price.toLocaleString("en-NG", { style: "currency", currency: "NGN", minimumFractionDigits: 0 });
     header.hero
             .hero__image
                 img(src="https://static.rdc.moveaws.com/images/hero/default/2021-11/jpg/hp-hero-desktop.jpg")
@@ -8,16 +9,17 @@ block content
                 h1 Find your next home.
                 p Let’s find a home that’s perfect for you
                 .hero__btn-box
+                    a.hero__btn.hero__btn--buy.btn(href='/property') All
                     a.hero__btn.hero__btn--buy.btn(href='#') Buy
                     a.hero__btn.hero__btn--buy.btn(href='#') Rent
-                    a.hero__btn.hero__btn--rent.btn(href='#') Sell
                     a.hero__btn.hero__btn--shortlet.btn(href='#') Shortlet
                     a.hero__btn.hero__btn--land.btn(href='#') Land
-                .hero__input-box
-                    input.hero__input(type="text" id="search-text" placeholder="Where do you want to live? State, City")
-                    button(class="hero__input-btn", aria-label="Search", type="button")
-                        svg(data-testid="icon-search", viewBox="0 0 512 512", aria-hidden="true", focusable="false")
-                            path(d="m459 434-82-82c64-76 57-189-16-257-73-67-187-65-257 6-71 70-73 184-5 257 67 73 180 80 256 16l83 81c2 3 6 5 10 5s8-2 11-5c3-2 4-6 4-10s-1-8-4-11zm-223-47c-87 0-157-70-157-157S149 73 236 73c86 0 157 70 157 157s-70 157-157 157z")
+               
+                if (!user)
+                    nav.hero-btn
+                        a.btn.hero__el.hero-btn-el(href='/login') Login
+                        a.btn.hero__el.hero-btn-el.hero-btn-el--cta(href='/signup') Sign Up
+                
 
     section.feature
         .container
@@ -25,51 +27,59 @@ block content
             .feature__content
                 each property in properties
                     if property.featured
-                        a(href=`/property/${property.id}`).feature__card
-                            .feature__card-img-box
+                        .feature__card(data-prop-id=property.id)
+                            a(href=`/property/${property.id}`).feature__card-img-box
                                 img.feature__card-img(src=`/img/properties/${property.imageCover}`)
                                 .overlay
-                            .feature__card-detail
-                                h4.feature__card-detail-name= property.name
-                                h5.feature__card-detail-location= `${property.location.city}, ${property.location.state}`
-                                p.feature__card-detail-price= `N${property.price}`
+                            .feature__card-detail-box
+                                .feature__card-detail
+                                    h4.feature__card-detail-name= property.name
+                                    h5.feature__card-detail-location= `${property.location.city}, ${property.location.state}`
+                                    p.feature__card-detail-price= formattedPrice(property.price)
+                                    p.feature__card-detail-type= property.type
+                                if (user && user.bookmark && user.bookmark.includes(property.id))
+                                    span(class="bookmark active material-symbols-sharp") bookmark
+                                else 
+                                    span(class="bookmark material-symbols-sharp") bookmark
+
+
                                
                                 
 
-    section.service
-        .container
-            h2.section__title Services
-            .service__box
-                .service__card
-                    img.service__card-img(src="https://images.propertypro.ng/logo/VendorCategory-ba8V9ADQlE3J03Z.jpg")
-                    .service__card-text
-                        h3 Electrician 
-                        p 42 Vendors
-                .service__card
-                    img.service__card-img(src="https://images.propertypro.ng/logo/VendorCategory-vnIjXjHbKi2RqnY.jpg")
-                    .service__card-text
-                        h3 Plumbers 
-                        p 17 Vendors
-                .service__card
-                    img.service__card-img(src="https://images.propertypro.ng/logo/VendorCategory-TwGfENlnPGYyWZE.jpg")
-                    .service__card-text
-                        h3 Painters 
-                        p 40 Vendors
-            button.service__btn.btn View more service
+    //- section.service
+    //-     .container
+    //-         h2.section__title Services
+    //-         .service__box
+    //-             .service__card
+    //-                 img.service__card-img(src="https://images.propertypro.ng/logo/VendorCategory-ba8V9ADQlE3J03Z.jpg")
+    //-                 .service__card-text
+    //-                     h3 Electrician 
+    //-                     p 42 Vendors
+    //-             .service__card
+    //-                 img.service__card-img(src="https://images.propertypro.ng/logo/VendorCategory-vnIjXjHbKi2RqnY.jpg")
+    //-                 .service__card-text
+    //-                     h3 Plumbers 
+    //-                     p 17 Vendors
+    //-             .service__card
+    //-                 img.service__card-img(src="https://images.propertypro.ng/logo/VendorCategory-TwGfENlnPGYyWZE.jpg")
+    //-                 .service__card-text
+    //-                     h3 Painters 
+    //-                     p 40 Vendors
+    //-         button.service__btn.btn View more service
     
-    section.blog
-        .container 
-            h2.section__title Recent from the Blog
-            .blog__content
-                each blog in blogs           
-                    .blog__card
-                        .blog__card-img-box 
-                            img.blog__card-img(src='https://www.propertypro.ng/blog/wp-content/uploads/2023/04/pexels-max-rahubovskiy-6588578-150x150.jpg')
-                            .overlay
-                        .blog__card-detail
-                            h5.blog__card-heading Interior design Trends For The Bedroom in 2023
-                            p.blog__card-text= blog.content
-                            a(href=`/blog/${blog.id}`).blog__card-btn.btn READ MORE
+    //- section.blog
+    //-     .container 
+    //-         h2.section__title Recent from the Blog
+    //-         .blog__content
+    //-             each blog in blogs           
+    //-                 .blog__card
+    //-                     .blog__card-img-box 
+    //-                         img.blog__card-img(src='https://www.propertypro.ng/blog/wp-content/uploads/2023/04/pexels-max-rahubovskiy-6588578-150x150.jpg')
+    //-                         .overlay
+    //-                     .blog__card-detail
+    //-                         h5.blog__card-heading Interior design Trends For The Bedroom in 2023
+    //-                         p.blog__card-text= blog.content
+    //-                         a(href=`/blog/${blog.id}`).blog__card-btn.btn READ MORE
                     
                   
 

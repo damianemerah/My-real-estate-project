@@ -21,22 +21,14 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["user", "agent", "admin", "service"],
+    enum: ["user", "agent", "admin"],
     default: "user",
   },
   companyName: {
     type: String,
-    required: function () {
-      return this.role === "agent" || this.role === "service";
-    },
-    default: null,
   },
   logo: {
     type: String,
-    required: function () {
-      return this.role === "agent" || this.role === "service";
-    },
-    default: null,
   },
   password: {
     type: String,
@@ -63,6 +55,7 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
+  bookmark: [{ type: mongoose.Schema.ObjectId, ref: "Property" }],
 });
 
 userSchema.pre("save", async function (next) {
@@ -70,15 +63,6 @@ userSchema.pre("save", async function (next) {
 
   //hash password
   this.password = await bcrypt.hash(this.password, 12);
-
-  const skippedProperties = ["companyName", "logo"];
-
-  skippedProperties.forEach((prop) => {
-    if (this.isNew && !this[prop]) {
-      // skip validation for new document
-      this.$locals.skipValidation[prop] = true;
-    }
-  });
 
   this.passwordConfirm = undefined;
   next();

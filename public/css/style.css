@@ -16,12 +16,19 @@ body {
   line-height: 1.6;
   font-weight: 300;
   min-height: 100vh;
+  height: 100%;
+  position: relative;
 }
 
 a:link,
 a:visited {
   text-decoration: none;
   color: #65676b;
+}
+
+.material-symbols-sharp {
+  scale: 1.2;
+  margin-right: 0.8rem;
 }
 
 .container {
@@ -38,10 +45,28 @@ a:visited {
   text-align: center;
 }
 
-.btn {
-  border: 1.6px solid rgba(63, 108, 166, 0.5);
-  border-radius: 0.4rem;
-  outline: none;
+section,
+main {
+  margin: 4rem 0;
+}
+
+.btn,
+.btn:link,
+.btn:visited {
+  font-size: 1.6rem;
+  padding: 1.4rem 3rem;
+  border-radius: 10rem;
+  text-transform: uppercase;
+  display: inline-block;
+  text-decoration: none;
+  position: relative;
+  transition: all 0.4s;
+  font-weight: 400;
+  backface-visibility: hidden;
+  color: #4080ff;
+  /*Add later when we use this for the button in form*/
+  border: none;
+  cursor: pointer;
 }
 
 .overlay {
@@ -58,8 +83,8 @@ a:visited {
   color: #65676b;
   font-size: 1.4rem;
   font-weight: 700;
-  box-shadow: 0px 0.5px 5px 0 rgba(0, 0, 0, 0.3);
-  padding: 1rem 1.6rem;
+  box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
+  padding: 2rem 1.6rem;
 }
 .header__content {
   display: flex;
@@ -74,14 +99,9 @@ a:visited {
   margin-left: 1.4rem;
 }
 .header .nav__btn {
-  border: 1.6px solid rgba(63, 108, 166, 0.5);
-  border-radius: 0.4rem;
-  outline: none;
-  padding: 0 1.6rem;
-  background-color: #ffffff;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
+  font-weight: bold;
+  padding: 0.8rem 2rem !important;
+  background-color: #f2f2f2;
 }
 .header .nav__btn--cta {
   background-color: #4080ff;
@@ -91,10 +111,32 @@ a:visited {
   margin-left: 0.3rem;
   padding: 0.2rem;
   text-transform: uppercase;
-  color: #d95284;
+  color: red;
 }
 .header .nav__btn:first-of-type {
   margin-left: 15rem;
+}
+.header .nav__el {
+  display: flex;
+  align-items: center;
+  text-transform: capitalize;
+}
+.header .nav__user-img {
+  height: 3.5rem;
+  width: 3.5rem;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+.header .nav--properties {
+  margin-right: 8rem;
+}
+.header .nav .bookmarks__link {
+  display: flex;
+  align-items: center;
+  margin-left: 4rem;
+}
+.header .nav .bookmarks__link > * {
+  margin-right: 2rem;
 }
 .header__logo {
   width: 20rem;
@@ -119,6 +161,16 @@ a:visited {
   -o-object-fit: cover;
      object-fit: cover;
   display: block;
+}
+.hero-btn-el {
+  font-weight: bold !important;
+  padding: 1rem 4rem !important;
+  background-color: #f2f2f2;
+}
+.hero-btn-el--cta {
+  background-color: #4080ff;
+  color: #ffffff !important;
+  margin-left: 3rem;
 }
 .hero__form {
   text-align: center;
@@ -150,7 +202,7 @@ a:visited {
   background-color: rgb(255, 255, 255);
   border: 1px solid transparent;
   border-radius: 36px;
-  box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 8px;
+  box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
   padding-left: 16px;
   padding-right: 4px;
   max-width: 575px;
@@ -196,6 +248,11 @@ a:visited {
   font-size: 1.4rem;
   color: #f0f2f5 !important;
   text-transform: uppercase;
+  border: none;
+  border-radius: 0 !important;
+}
+.hero__btn:hover {
+  border-bottom: 2px solid #f0f2f5;
 }
 
 .feature__content {
@@ -206,8 +263,11 @@ a:visited {
 .feature__card {
   max-width: calc(25% - 12px);
   width: 100%;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+  box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
   border-radius: 1rem;
+}
+.feature__card-detail-box {
+  display: flex;
 }
 .feature__card-img-box {
   position: relative;
@@ -223,19 +283,27 @@ a:visited {
 }
 .feature__card-detail {
   padding: 1.6rem;
+  flex: 1;
 }
 .feature__card-detail-name {
   font-size: 1.8rem;
 }
+.feature__card-detail-type {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  opacity: 0.6;
+  color: #4080ff;
+}
 .feature__card-detail-location {
   font-size: 1.4rem;
-  opacity: 0.5;
+  opacity: 0.7;
 }
 .feature__card-detail-price {
   font-size: 1.9rem;
   font-weight: bold;
   margin-bottom: 0.4rem;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 .feature__card-detail-company {
   display: flex;
@@ -245,6 +313,14 @@ a:visited {
 }
 .feature__card-detail-company-item {
   height: 1.5rem;
+}
+
+.bookmark {
+  padding: 1.6rem 0;
+  padding-right: 1.6rem;
+}
+.bookmark.active {
+  color: #4080ff;
 }
 
 .service {
@@ -259,7 +335,7 @@ a:visited {
   margin-right: 1.6rem;
 }
 .service__card {
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+  box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
   border-radius: 1rem;
 }
 .service__card-text {
@@ -282,7 +358,7 @@ a:visited {
 .blog__card {
   display: block;
   max-width: calc(25% - 16px);
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+  box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
 }
 .blog__card-img-box {
   -o-object-fit: cover;
@@ -355,14 +431,31 @@ a:visited {
   align-items: start;
   margin: 4rem auto;
 }
+.property__update {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.6rem;
+  color: #4080ff !important;
+}
 .property h2 {
   text-align: left !important;
   margin-bottom: 1.2rem;
 }
-.property__details {
+.property__details, .property__area {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+}
+.property__details {
+  justify-content: space-between;
+}
+.property__area {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.property__area > * {
+  margin-right: 1.6rem;
 }
 .property__price {
   display: flex;
@@ -385,12 +478,12 @@ a:visited {
   font-weight: bold;
   letter-spacing: 0.1rem;
   margin-bottom: 1.6rem;
-  box-shadow: 0px 0.5px 5px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
   padding: 2rem 3rem;
 }
 .property__img-box {
-  width: 70rem;
-  height: 70rem;
+  width: 100%;
+  height: 50rem;
   margin: 0 auto;
 }
 .property__img {
@@ -400,6 +493,16 @@ a:visited {
   margin: 0 auto;
   width: 100%;
   height: 100%;
+}
+.property__action {
+  display: inline-flex;
+  align-items: center;
+}
+.property__action .btn {
+  color: #4080ff !important;
+}
+.property__action > * {
+  margin-right: 2rem;
 }
 .property__images-box {
   display: inline-flex;
@@ -425,10 +528,12 @@ a:visited {
   width: 100%;
 }
 .property__amenities-list {
-  display: flex;
-  justify-content: space-around;
+  display: inline-flex;
   list-style: none;
   align-items: center;
+}
+.property__amenities-list > * {
+  margin-right: 3rem;
 }
 .property__amenities-list-item {
   display: flex;
@@ -441,7 +546,7 @@ a:visited {
 }
 .property__side {
   flex: 1;
-  box-shadow: 0px 0.5px 5px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
   padding: 2rem;
   font-size: 1.6rem;
 }
@@ -458,7 +563,16 @@ a:visited {
   align-items: center;
 }
 .property__agent span {
-  font-weight: bold;
+  text-transform: capitalize;
+}
+.property__agent-detail {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.property__agent-detail > *:nth-child(2) {
+  margin-right: 2rem;
 }
 .property__img-delete {
   display: none;
@@ -506,7 +620,7 @@ a:visited {
 
 .form__input:focus {
   outline: none;
-  border-bottom: 3px solid #55c57a;
+  border-bottom: 3px solid #4080ff;
 }
 
 .form__input:focus:invalid {
@@ -545,25 +659,15 @@ a:visited {
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   padding: 1.6rem 15rem;
-  box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
 }
 
 .alert--success {
-  background-color: #20bf6b;
+  background-color: #4080ff;
 }
 
 .alert--error {
   background-color: #eb4d4b;
-}
-
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type=number] {
-  -moz-appearance: textfield; /* Firefox */
 }
 
 .new-property {
@@ -647,4 +751,163 @@ input[type=number] {
 
 input[type=file] {
   color: transparent !important;
+}
+
+.properties {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin: 4rem 0;
+}
+
+.form__filters {
+  margin-top: 4rem;
+}
+.form__filters > *:not(:last-child) {
+  margin-right: 1.4rem;
+}
+.form__filters label,
+.form__filters .form__label {
+  margin-right: 0.5rem;
+}
+.form__filters .form__group,
+.form__filters .form__label {
+  display: inline-flex;
+  align-items: center;
+}
+
+.user-view {
+  background-color: #fff;
+  max-width: 120rem;
+  margin: 0 auto;
+  min-height: 100vh;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.07);
+  display: flex;
+}
+
+.user-view__menu {
+  flex: 32rem 0 0;
+  background-image: linear-gradient(to right bottom, #4080ff, #3f6ca6);
+  padding: 4rem 0;
+}
+
+.user-view__content {
+  flex: 1;
+  padding: 7rem 0;
+}
+
+.user-view__form-container {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 0 8rem;
+}
+
+.side-nav {
+  list-style: none;
+}
+
+.side-nav li {
+  margin: 1rem 0;
+  border-left: 0 solid #fff;
+  transition: all 0.3s;
+}
+
+.side-nav--active,
+.side-nav li:hover {
+  border-left: 4px solid #fff !important;
+}
+
+.side-nav--active a {
+  transform: translateX(-3px);
+}
+
+.side-nav a:link,
+.side-nav a:visited {
+  padding: 1rem 4rem;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  font-weight: 400;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.side-nav a:hover,
+.side-nav a:active {
+  transform: translateX(3px);
+}
+
+.side-nav svg {
+  height: 1.9rem;
+  width: 1.9rem;
+  fill: #f7f7f7;
+  margin-right: 2rem;
+}
+
+.admin-nav {
+  margin-top: 5.5rem;
+}
+
+.admin-nav__heading {
+  margin: 0 5rem 1.5rem 4rem;
+  padding-bottom: 3px;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  color: #f2f2f2;
+  border-bottom: 1px solid currentColor;
+}
+
+.form__label {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.form__photo-upload {
+  display: flex;
+  align-items: center;
+  font-size: 1.6rem;
+}
+
+.form__user-photo {
+  height: 7.5rem;
+  width: 7.5rem;
+  border-radius: 50%;
+  margin-right: 2rem;
+}
+
+.form__upload {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.form__upload:focus + label {
+  outline: 3px solid #4080ff;
+  outline-offset: 3px;
+}
+
+.form__upload + label {
+  color: #4080ff;
+  display: inline-block;
+  text-decoration: none;
+  border-bottom: 1px solid #4080ff;
+  padding: 3px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.form__upload + label:hover {
+  background-color: #4080ff;
+  color: #fff;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
 }/*# sourceMappingURL=style.css.map */

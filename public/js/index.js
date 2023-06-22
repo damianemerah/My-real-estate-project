@@ -1,13 +1,20 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 
-import { login, logout } from "./login";
+import { login, logout, signup } from "./login";
 import { handleFormTag } from "./handleFormTag";
 import { truncateText } from "./truncateText";
-import { formFields, addProperty, deleteProperty } from "./handleFormSubmit";
+import {
+  formFields,
+  addProperty,
+  deleteProperty,
+  updateSettings,
+  addBookmark,
+} from "./handleFormSubmit";
 import { handleImagePreview } from "./handleImagePreview";
 
 const loginForm = document.querySelector(".form--login");
+const signupForm = document.querySelector(".form--signup");
 const formInputTag = document.querySelector(".tags__field-input");
 const tagList = document.querySelector(".tags__field");
 const propertyForm = document.querySelector(".form__property");
@@ -18,12 +25,16 @@ const imageCoverInput = document.querySelector(".imageCover-input");
 const imagesInput = document.querySelector(".images-input");
 const imgList = document.querySelectorAll(".property__images-item");
 const deletePropBtn = document.querySelector(".btn-delete__property");
+const userDataForm = document.querySelector(".form-user-data");
+const userPasswordForm = document.querySelector(".form-user-password");
+const bookmark = document.querySelectorAll(".bookmark");
+const bookmarks = document.querySelectorAll(".bookmarks");
 
 let selectedImagesList = [];
 let selectedImageCover = "";
 let numImg = 1;
 
-truncateText(".blog__card-text", 60);
+truncateText(".feature__card-detail-name", 40);
 
 // Get images in DB
 if (propertyFormUpdate) {
@@ -60,6 +71,55 @@ if (loginForm)
     const password = document.getElementById("password").value;
 
     login(email, password);
+  });
+
+if (userDataForm)
+  userDataForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const form = new FormData();
+
+    form.append("name", document.getElementById("name").value);
+    form.append("email", document.getElementById("email").value);
+    form.append("photo", document.getElementById("photo").files[0]);
+
+    for (const [key, value] of form.entries()) {
+      console.log(key, ":", value);
+    }
+    updateSettings(form, "data");
+  });
+
+if (userPasswordForm)
+  userPasswordForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    document.querySelector(".btn--save-password").textContent = "Updating...";
+
+    const passwordCurrent = document.getElementById("password-current").value;
+    const password = document.getElementById("password").value;
+    const passwordConfirm = document.getElementById("password-confirm").value;
+    await updateSettings(
+      { passwordCurrent, password, passwordConfirm },
+      "password"
+    );
+
+    document.querySelector(".btn--save-password").textContent = "Save password";
+    document.getElementById("password-current").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("password-confirm").value = "";
+  });
+
+if (signupForm)
+  signupForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("account_name").value;
+    const email = document.getElementById("account_email").value;
+    const password = document.getElementById("account_password").value;
+    const passwordConfirm = document.getElementById(
+      "account_passwordConfirm"
+    ).value;
+    const role = document.getElementById("role").value;
+    signup(name, email, password, passwordConfirm, role);
   });
 
 if (logoutBtn) logoutBtn.addEventListener("click", logout);
@@ -250,3 +310,22 @@ if (propertyForm || propertyFormUpdate) {
     imagesInput.value = "";
   });
 }
+
+bookmark.forEach((el) =>
+  el.addEventListener("click", (e) => {
+    e.preventDefault();
+    const target = e.target;
+    const property = target.closest(".feature__card").dataset.propId;
+
+    console.log(property);
+
+    if (target.classList.contains("active")) {
+      //remove bookmark
+      target.classList.remove("active");
+      addBookmark({ bookmark: property }, "remove");
+    } else {
+      // add bookmark
+      addBookmark({ bookmark: property }, "add", target);
+    }
+  })
+);

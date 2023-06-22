@@ -1,0 +1,29 @@
+extends base
+
+block append head
+
+block content 
+    main
+        .container
+            .login-form
+                h2.heading-secondary.ma-bt-lg  Create an account
+                form.form.form--signup
+                    .form__group
+                        label.form__label(for='account_name') Name
+                        input#account_name.form__input(type='text', placeholder='John Doe', required)
+                    .form__group
+                        label.form__label(for='account_email') Email address
+                        input#account_email.form__input(type='email', placeholder='you@example.com', required)
+                    .form__group.ma-bt-md
+                        label.form__label(for='account_password') Password
+                        input#account_password.form__input(type='password', placeholder='••••••••', required, minlength='8')
+                    .form__group.ma-bt-md
+                        label.form__label(for='account_passwordConfirm') Confirm Password
+                        input#account_passwordConfirm.form__input(type='password', placeholder='••••••••', required, minlength='8')
+                    .form__group
+                        .form__label(for="role") Account Type:
+                        select.form__input#role( name="type", required)
+                            option(value="user") User
+                            option(value="agent") Agent
+                    .form__group
+                        button.btn.btn--login Signup

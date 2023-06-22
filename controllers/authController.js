@@ -39,8 +39,6 @@ exports.signup = catchAsync(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
     role: req.body.role,
-    companyName: req.body.companyName,
-    logo: req.body.logo,
     contact: req.body.contact,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
@@ -151,3 +149,22 @@ exports.restrictTo =
 
     next();
   };
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  //1) Get user from collection
+  const user = await User.findById(req.user.id).select("+password");
+  //2) Check if posted current password is correct
+  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+    return next(new AppError("Incorrect current password", 401));
+  }
+
+  //3) If so, update password
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+
+  // User.findByIdAndUpdate will NOT work as intended!
+
+  //4) Log user in, send JWT
+  createSendToken(user, 200, res);
+});

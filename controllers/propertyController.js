@@ -4,6 +4,7 @@ const sharp = require("sharp");
 const Property = require("../models/propertyModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const APIFeatures = require("../utils/apiFeatures");
 
 const multerStorage = multer.memoryStorage();
 
@@ -59,11 +60,7 @@ exports.resizePropertyImages = catchAsync(async (req, res, next) => {
       .toFile(`public/img/properties/${req.body.imageCover}`);
   }
 
-  console.log("TYPE", typeof req.body.images);
-
   if (req.files.images) {
-    console.log(req.body.images);
-
     //images
     if (!req.body.images) {
       req.body.images = [];
@@ -144,7 +141,16 @@ exports.getProperty = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllProperty = catchAsync(async (req, res, next) => {
-  const properties = await Property.find({}).populate("locations.city");
+  let filter = {};
+  if (req.params.tourId) filter = { tour: req.params.tourId };
+
+  const features = new APIFeatures(Property.find(filter), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const properties = await features.query;
 
   res.status(200).json({
     status: "success",

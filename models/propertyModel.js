@@ -13,7 +13,7 @@ const propertySchema = new mongoose.Schema({
     type: String,
     required: [true, "A property must have a name"],
     trim: true,
-    maxLength: [40, "A property must have less or equal than 50 characters"],
+    maxLength: [200, "A property must have less or equal than 200 characters"],
     validate: {
       validator: alphanumericValidator,
       message: "Property name must contain only alphanumeric characters",
@@ -35,6 +35,7 @@ const propertySchema = new mongoose.Schema({
     type: String,
     trim: true,
     required: [true, "A property must have a description"],
+    maxLength: 5000,
   },
   imageCover: {
     type: String,

@@ -567,6 +567,7 @@ var _truncateText = require("./truncateText");
 var _handleFormSubmit = require("./handleFormSubmit");
 var _handleImagePreview = require("./handleImagePreview");
 const loginForm = document.querySelector(".form--login");
+const signupForm = document.querySelector(".form--signup");
 const formInputTag = document.querySelector(".tags__field-input");
 const tagList = document.querySelector(".tags__field");
 const propertyForm = document.querySelector(".form__property");
@@ -577,10 +578,14 @@ const imageCoverInput = document.querySelector(".imageCover-input");
 const imagesInput = document.querySelector(".images-input");
 const imgList = document.querySelectorAll(".property__images-item");
 const deletePropBtn = document.querySelector(".btn-delete__property");
+const userDataForm = document.querySelector(".form-user-data");
+const userPasswordForm = document.querySelector(".form-user-password");
+const bookmark = document.querySelectorAll(".bookmark");
+const bookmarks = document.querySelectorAll(".bookmarks");
 let selectedImagesList = [];
 let selectedImageCover = "";
 let numImg = 1;
-(0, _truncateText.truncateText)(".blog__card-text", 60);
+(0, _truncateText.truncateText)(".feature__card-detail-name", 40);
 // Get images in DB
 if (propertyFormUpdate) {
     selectedImagesList = selectedImagesList.splice(0);
@@ -601,6 +606,40 @@ if (loginForm) loginForm.addEventListener("submit", (e)=>{
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     (0, _login.login)(email, password);
+});
+if (userDataForm) userDataForm.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    const form = new FormData();
+    form.append("name", document.getElementById("name").value);
+    form.append("email", document.getElementById("email").value);
+    form.append("photo", document.getElementById("photo").files[0]);
+    for (const [key, value] of form.entries())console.log(key, ":", value);
+    (0, _handleFormSubmit.updateSettings)(form, "data");
+});
+if (userPasswordForm) userPasswordForm.addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    document.querySelector(".btn--save-password").textContent = "Updating...";
+    const passwordCurrent = document.getElementById("password-current").value;
+    const password = document.getElementById("password").value;
+    const passwordConfirm = document.getElementById("password-confirm").value;
+    await (0, _handleFormSubmit.updateSettings)({
+        passwordCurrent,
+        password,
+        passwordConfirm
+    }, "password");
+    document.querySelector(".btn--save-password").textContent = "Save password";
+    document.getElementById("password-current").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("password-confirm").value = "";
+});
+if (signupForm) signupForm.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    const name = document.getElementById("account_name").value;
+    const email = document.getElementById("account_email").value;
+    const password = document.getElementById("account_password").value;
+    const passwordConfirm = document.getElementById("account_passwordConfirm").value;
+    const role = document.getElementById("role").value;
+    (0, _login.signup)(name, email, password, passwordConfirm, role);
 });
 if (logoutBtn) logoutBtn.addEventListener("click", (0, _login.logout));
 const fileInput = document.querySelector(".images");
@@ -719,6 +758,22 @@ if (propertyForm || propertyFormUpdate) {
         imagesInput.value = "";
     });
 }
+bookmark.forEach((el)=>el.addEventListener("click", (e)=>{
+        e.preventDefault();
+        const target = e.target;
+        const property = target.closest(".feature__card").dataset.propId;
+        console.log(property);
+        if (target.classList.contains("active")) {
+            //remove bookmark
+            target.classList.remove("active");
+            (0, _handleFormSubmit.addBookmark)({
+                bookmark: property
+            }, "remove");
+        } else // add bookmark
+        (0, _handleFormSubmit.addBookmark)({
+            bookmark: property
+        }, "add", target);
+    }));
 
 },{"regenerator-runtime/runtime":"cDAES","core-js/modules/es.regexp.flags.js":"azdjA","core-js/modules/es.typed-array.set.js":"b0iRR","core-js/modules/web.immediate.js":"3pRoj","./login":"aUJqG","./handleFormTag":"cAvSW","./truncateText":"kTXqU","./handleFormSubmit":"7AHMc","./handleImagePreview":"fTUK3"}],"cDAES":[function(require,module,exports) {
 /**
@@ -3040,9 +3095,11 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "login", ()=>login);
 parcelHelpers.export(exports, "logout", ()=>logout);
+parcelHelpers.export(exports, "signup", ()=>signup);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alert = require("./alert");
+var _regeneratorRuntime = require("regenerator-runtime");
 const login = async (email, password)=>{
     try {
         const res = await (0, _axiosDefault.default)({
@@ -3065,6 +3122,7 @@ const login = async (email, password)=>{
 };
 const logout = async ()=>{
     try {
+        console.log("Logging out");
         const res = await (0, _axiosDefault.default)({
             method: "GET",
             url: "http://127.0.0.1:3000/api/v1/users/logout"
@@ -3079,8 +3137,33 @@ const logout = async ()=>{
         (0, _alert.showAlert)("error", "Error logging out! Try again.");
     }
 };
+const signup = async (name, email, password, passwordConfirm, role)=>{
+    try {
+        const data = {
+            name,
+            email,
+            password,
+            passwordConfirm,
+            role
+        };
+        console.log(data);
+        const res = await (0, _axiosDefault.default)({
+            method: "POST",
+            url: "http://127.0.0.1:3000/api/v1/users/signup",
+            data
+        });
+        if (res.data.status === "success") {
+            (0, _alert.showAlert)("success", "Account created successfully");
+            window.setTimeout(()=>{
+                location.assign("/");
+            }, 1500);
+        }
+    } catch (err) {
+        (0, _alert.showAlert)("error", err.response.data.message);
+    }
+};
 
-},{"axios":"5vw73","./alert":"8F2M5","@parcel/transformer-js/src/esmodule-helpers.js":"fofuL"}],"5vw73":[function(require,module,exports) {
+},{"axios":"5vw73","./alert":"8F2M5","@parcel/transformer-js/src/esmodule-helpers.js":"fofuL","regenerator-runtime":"cDAES"}],"5vw73":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>(0, _axiosJsDefault.default));
@@ -7252,7 +7335,7 @@ const showAlert = (type, msg)=>{
     hideAlert();
     const markup = `<div class="alert alert--${type}">${msg}</div>`;
     document.querySelector("body").insertAdjacentHTML("afterbegin", markup);
-    window.setTimeout(hideAlert, 15000);
+    window.setTimeout(hideAlert, 2500);
 };
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"fofuL"}],"cAvSW":[function(require,module,exports) {
@@ -7322,6 +7405,8 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "formFields", ()=>formFields);
 parcelHelpers.export(exports, "addProperty", ()=>addProperty);
 parcelHelpers.export(exports, "deleteProperty", ()=>deleteProperty);
+parcelHelpers.export(exports, "updateSettings", ()=>updateSettings);
+parcelHelpers.export(exports, "addBookmark", ()=>addBookmark);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alert = require("./alert");
@@ -7365,7 +7450,6 @@ const addProperty = async (data, type)=>{
             ];
             data.append("amenities", JSON.stringify(amenities));
         } else data.append("amenities", JSON.stringify([]));
-        console.log(data.get("amenities"));
         const id = window.location.pathname.split("/").find((el)=>el.length > 11 && (el !== "property" || el !== "update"));
         const url = type === "new" ? "http://127.0.0.1:3000/api/v1/property/new" : `http://127.0.0.1:3000/api/v1/property/${id}`;
         const res = await (0, _axiosDefault.default)({
@@ -7396,6 +7480,40 @@ const deleteProperty = async ()=>{
             setTimeout(()=>{
                 window.location.assign("/");
             }, 3000);
+        }
+    } catch (err) {
+        (0, _alert.showAlert)("error", err.response.data.message);
+    }
+};
+const updateSettings = async (data, type)=>{
+    try {
+        const url = type === "password" ? "http://127.0.0.1:3000/api/v1/users/updateMyPassword/" : "http://127.0.0.1:3000/api/v1/users/updateMe";
+        const res = await (0, _axiosDefault.default)({
+            method: "PATCH",
+            url,
+            data
+        });
+        if (res.data.status === "success") {
+            (0, _alert.showAlert)("success", `${type.toUpperCase()} Updated sucessfully`);
+            setTimeout(()=>{
+                window.location.assign("/me");
+            }, 1500);
+        }
+    } catch (err) {
+        (0, _alert.showAlert)("error", err.response.data.message);
+    }
+};
+const addBookmark = async (data, type, el = null)=>{
+    try {
+        const url = type === "add" ? "http://127.0.0.1:3000/api/v1/users/bookMark/add" : "http://127.0.0.1:3000/api/v1/users/bookmark/remove";
+        const res = await (0, _axiosDefault.default)({
+            method: "PATCH",
+            url,
+            data
+        });
+        if (res.data.status === "success") {
+            if (type === "add") el.classList.add("active");
+            (0, _alert.showAlert)("success", `Bookmark ${type === "add" ? "added" : "removed"}`);
         }
     } catch (err) {
         (0, _alert.showAlert)("error", err.response.data.message);

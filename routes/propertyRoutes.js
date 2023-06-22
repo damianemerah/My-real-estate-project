@@ -7,7 +7,6 @@ const route = express.Router();
 route.post(
   "/new",
   authController.protect,
-  authController.restrictTo("agent", "admin"),
   propertyController.uploadPropertyImages,
   propertyController.resizePropertyImages,
   propertyController.createProperty
@@ -15,16 +14,10 @@ route.post(
 
 route
   .get("/:id", propertyController.getProperty)
-  .delete(
-    "/:id",
-    authController.protect,
-    authController.restrictTo("agent", "admin"),
-    propertyController.deleteProperty
-  )
+  .delete("/:id", authController.protect, propertyController.deleteProperty)
   .patch(
     "/:id",
     authController.protect,
-    authController.restrictTo("agent", "admin"),
     propertyController.uploadPropertyImages,
     propertyController.resizePropertyImages,
     propertyController.updateProperty

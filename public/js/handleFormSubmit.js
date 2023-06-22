@@ -72,8 +72,6 @@ export const addProperty = async (data, type) => {
       data.append("amenities", JSON.stringify([]));
     }
 
-    console.log(data.get("amenities"));
-
     const id = window.location.pathname
       .split("/")
       .find((el) => el.length > 11 && (el !== "property" || el !== "update"));
@@ -116,6 +114,52 @@ export const deleteProperty = async () => {
       setTimeout(() => {
         window.location.assign("/");
       }, 3000);
+    }
+  } catch (err) {
+    showAlert("error", err.response.data.message);
+  }
+};
+
+export const updateSettings = async (data, type) => {
+  try {
+    const url =
+      type === "password"
+        ? "http://127.0.0.1:3000/api/v1/users/updateMyPassword/"
+        : "http://127.0.0.1:3000/api/v1/users/updateMe";
+
+    const res = await axios({
+      method: "PATCH",
+      url,
+      data,
+    });
+
+    if (res.data.status === "success") {
+      showAlert("success", `${type.toUpperCase()} Updated sucessfully`);
+      setTimeout(() => {
+        window.location.assign("/me");
+      }, 1500);
+    }
+  } catch (err) {
+    showAlert("error", err.response.data.message);
+  }
+};
+
+export const addBookmark = async (data, type, el = null) => {
+  try {
+    const url =
+      type === "add"
+        ? "http://127.0.0.1:3000/api/v1/users/bookMark/add"
+        : "http://127.0.0.1:3000/api/v1/users/bookmark/remove";
+
+    const res = await axios({
+      method: "PATCH",
+      url,
+      data,
+    });
+
+    if (res.data.status === "success") {
+      if (type === "add") el.classList.add("active");
+      showAlert("success", `Bookmark ${type === "add" ? "added" : "removed"}`);
     }
   } catch (err) {
     showAlert("error", err.response.data.message);

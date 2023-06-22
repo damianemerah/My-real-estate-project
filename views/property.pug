@@ -4,20 +4,27 @@ extends base
 block content
     main.main
         - const formattedPrice = price => price.toLocaleString("en-NG", { style: "currency", currency: "NGN", minimumFractionDigits: 0 });
-        .container
-        .property
-            if (user.role === "agent")
-                h4
-                    a(href=`/property/${property.id}/update`) Update Property
+        
+        if (user && property.agent && (user.id === property.agent.id || user.role === 'admin'))
+            .container
+                .property__action
+                    h4
+                        a.property__update(href=`/property/${property.id}/update`)
+                            span(class="material-symbols-sharp") settings
+                            span Update Property
+                    button.btn.btn-delete__property(type="button") Delete Property
+        .property.container
+
             .property__content
                 .property__name-box
-                    p.property__name= property.name
+                    h1.property__name= property.name
+                    p.feature__card-detail-type= property.type
                     .property__details 
                         p.property__location= `${property.location.state} ${property.location.city}`
                         if !property.priceDiscount
                             .property__price
-                            p Price:
-                                span.current-price= formattedPrice(property.price)
+                                p Price: 
+                                    span.current-price= formattedPrice(property.price)
                         if property.priceDiscount
                             .property__price 
                                 p Discount Price: 
@@ -37,19 +44,37 @@ block content
                         ul.property__amenities-list 
                             if property.type !== "land"
                                 each item in property.amenities 
-                                    li.property__amenities-list-item 
-                                        img(src="https://www.propertypro.ng/assets/assets/img/property/d74eaca1be63b5455d711bc0709d51cc-key-icon.png")
+                                    li.property__amenities-list-item
+                                        if item.amenity === "bed" 
+                                            span(class="material-symbols-outlined") bed
+                                        if item.amenity === "bath" 
+                                            span(class="material-symbols-outlined") shower
+                                        if item.amenity === "toilet" 
+                                            span(class="material-symbols-sharp") sauna
+                                    
                                         p.property__amenities-list-item-text= `${item.quantity} ${item.amenity}`
-                            each item in property.tags 
-                                li.property__amenities-list-item 
-                                    img(src="https://www.propertypro.ng/assets/assets/img/property/d74eaca1be63b5455d711bc0709d51cc-key-icon.png")
-                                    p.property__amenities-list-item-text= item
+                        p.property__area 
+                            span(class="material-symbols-sharp") landscape
+                            span= property.area + "sqm"
+                        each item in property.tags 
+                            li.property__amenities-list-item 
+                                span(class="material-symbols-sharp") task_alt
+                                p.property__amenities-list-item-text= item
                     .property__description 
                         h2.section__title Full Description 
                         p.property__description-text= property.description
             .property__side
                 .property__agent-details
                     .property__agent
+                        h2 Contact Agent:
+                        .property__agent-detail
+                            span(class="material-symbols-sharp") badge
+                            span Name:
+                            span.agent-name= property.agent.name
+                        .property__agent-detail
+                            span(class="material-symbols-sharp") mail
+                            span Email:
+                            span.agent-email= property.agent.email
                         if property.agent && property.agent.logo
                             img.property__agent-logo(src=`${property.agent.logo}`, alt=`${property.agent.companyName}`)
                         if property.agent && property.agent.companyName
@@ -58,8 +83,7 @@ block content
                                 span Agent: 
                                 | #{property.agent.name}
 
-                        p.property__agent-contact
-                            span= `Contact: ${property.agent.email}`
+                            
                         
 
 

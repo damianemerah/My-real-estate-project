@@ -33,13 +33,12 @@ app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "1000kb" }));
 app.use(cookieParser());
 
-app.use("/", viewRouter);
-
-app.use("/api/v1/users", userRouter);
 app.use("/api/v1/property", propertyRouter);
+app.use("/api/v1/users", userRouter);
 app.use("/api/v1/state", stateRouter);
 app.use("/api/v1/city", cityRouter);
 app.use("/api/v1/blog", blogRouter);
+app.use("/", viewRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

@@ -1,0 +1,21 @@
+extends base
+
+block content 
+    section.container
+        .properties
+            each property in properties
+                - const formattedPrice = price => price.toLocaleString("en-NG", { style: "currency", currency: "NGN", minimumFractionDigits: 0 });
+                .feature__card(data-prop-id=property.id)
+                    a(href=`/property/${property.id}`).feature__card-img-box
+                        img.feature__card-img(src=`/img/properties/${property.imageCover}`)
+                        .overlay
+                    .feature__card-detail-box
+                        .feature__card-detail
+                            h4.feature__card-detail-name= property.name
+                            h5.feature__card-detail-location= `${property.location.city}, ${property.location.state}`
+                            p.feature__card-detail-price= formattedPrice(property.price)
+                            p.feature__card-detail-type= property.type
+                        if (user && user.bookmark && user.bookmark.includes(property.id))
+                            span(class="bookmark active material-symbols-sharp") bookmark
+                        else 
+                            span(class="bookmark material-symbols-sharp") bookmark

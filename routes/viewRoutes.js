@@ -14,19 +14,19 @@ router
   )
   .get(
     "/property/new",
-    authController.isLoggedIn,
+    authController.protect,
     authController.restrictTo("agent", "admin"),
     viewController.newProperty
   )
-  .get("/property/:id", authController.isLoggedIn, viewController.getProperty);
-
-router.get("/blog/:id", authController.isLoggedIn, viewController.getBlog);
-router.get("/blog", authController.isLoggedIn, viewController.getBlogs);
-
-router.get("/login", authController.isLoggedIn, viewController.getLogin);
-
-router.get("/", authController.isLoggedIn, viewController.getOverview);
-
-router.get("/*", viewController.getErrorPage);
+  .get("/bookmarks", authController.protect, viewController.getBookmarks)
+  .get("/me", authController.protect, viewController.getAccount)
+  .get("/property/:id", authController.isLoggedIn, viewController.getProperty)
+  .get("/property", authController.isLoggedIn, viewController.getAllProperties)
+  .get("/login", authController.isLoggedIn, viewController.getLogin)
+  .get("/signup", viewController.getSignup)
+  .get("/", authController.isLoggedIn, viewController.getOverview)
+  .get("/*", viewController.getErrorPage);
+// .get("/blog/:id", authController.isLoggedIn, viewController.getBlog)
+// .get("/blog", authController.isLoggedIn, viewController.getBlogs)
 
 module.exports = router;

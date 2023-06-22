@@ -8,13 +8,20 @@ header.header
             a.nav__el(href='#') Sell
             a.nav__el(href='#') Rent
             a.nav__el(href='#') ShortLet
-            a.nav__el(href='/blog') Blog
             if (user)
                 if (user.role === 'agent' || user.role === 'admin')
-                    a(href="/property/new").nav__el.nav__btn Post A Property
+                    a(href="/property/new").btn.nav__el.nav__btn.nav__btn--cta Post A Property
                         span Free
-            if user
-                a.nav__el.nav__btn.nav__btn--logout Logout
+                a.nav__btn.btn.nav__btn--logout Logout
+                a.bookmarks__link(href="/bookmarks")
+                    span Bookmarks
+                    span(class="bookmarks material-symbols-sharp") bookmarks
             else
-                a.nav__el.nav__btn(href='/login') Login
-                a.nav__el.nav__btn.nav__btn--cta(href='/signup') Sign Up
+                a.btn.nav__el.nav__btn(href='/login') Login
+                a.btn.nav__el.nav__btn.nav__btn--cta(href='/signup') Sign Up
+            nav.nav.nav--user
+                if user
+                    a.nav__el(href='/me')
+                        img.nav__user-img(src=`/img/users/${user.photo}` alt=`${user.name}`)
+                        span= user.name.split(' ')[0]
+            
