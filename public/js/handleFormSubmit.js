@@ -109,11 +109,11 @@ export const deleteProperty = async () => {
       method: "DELETE",
     });
 
-    if (res.data.status === "success") {
-      window.location.reload();
+    if (res.status === 204) {
+      showAlert("success", "Deleted");
       setTimeout(() => {
         window.location.assign("/");
-      }, 3000);
+      }, 1500);
     }
   } catch (err) {
     showAlert("error", err.response.data.message);

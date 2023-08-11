@@ -613,7 +613,6 @@ if (userDataForm) userDataForm.addEventListener("submit", (e)=>{
     form.append("name", document.getElementById("name").value);
     form.append("email", document.getElementById("email").value);
     form.append("photo", document.getElementById("photo").files[0]);
-    for (const [key, value] of form.entries())console.log(key, ":", value);
     (0, _handleFormSubmit.updateSettings)(form, "data");
 });
 if (userPasswordForm) userPasswordForm.addEventListener("submit", async (e)=>{
@@ -667,7 +666,10 @@ if (tagList) tagList.addEventListener("click", (e)=>{
 });
 if (deletePropBtn) deletePropBtn.addEventListener("click", (e)=>{
     e.preventDefault();
-    (0, _handleFormSubmit.deleteProperty)();
+    let res = prompt("Confirm delete property : Ans (Y/N)");
+    if (res.toLocaleLowerCase() === "y" || res.toLocaleLowerCase() === "yes") (0, _handleFormSubmit.deleteProperty)();
+    else if (res.toLocaleLowerCase() === "n" || res.toLocaleLowerCase() === "no" || res.toLocaleLowerCase() === "") return;
+    else res = prompt("Ans (Y/N) :");
 });
 if (propertyForm) propertyForm.addEventListener("submit", (e)=>{
     e.preventDefault();
@@ -679,14 +681,12 @@ if (propertyFormUpdate) propertyFormUpdate.addEventListener("submit", (e)=>{
     e.preventDefault();
     const imgList = selectedImagesList.map((el)=>el.img || el.imgObj);
     const form = (0, _handleFormSubmit.formFields)(selectedImageCover, imgList);
-    for (const [key, value] of form.entries())console.log(key, value);
     (0, _handleFormSubmit.addProperty)(form, "update");
 });
 if (propertyForm || propertyFormUpdate) {
     const propertyType = document.querySelector(".type");
     const amenitiesField = document.querySelector(".amenities");
     propertyType.addEventListener("change", ()=>{
-        console.log(amenitiesField);
         if (propertyType.value.toLowerCase() === "land") amenitiesField.style.display = "none";
         else amenitiesField.style.display = "block";
     });
@@ -712,10 +712,8 @@ if (propertyForm || propertyFormUpdate) {
                 const img = target.parentElement.querySelector("img");
                 if (img.src.startsWith("http")) {
                     // Handle existing image URL
-                    if (img.classList.contains("cur__prop-imageCover")) {
-                        console.log(selectedImageCover);
-                        selectedImageCover = "";
-                    } else {
+                    if (img.classList.contains("cur__prop-imageCover")) selectedImageCover = "";
+                    else {
                         const itemIndex = selectedImagesList.findIndex((el)=>el.img === img.src.split("/").find((el)=>el.startsWith(`${"property".toLowerCase()}`) && el.length > 15));
                         if (itemIndex !== -1) selectedImagesList.splice(itemIndex, 1);
                     }
@@ -744,7 +742,6 @@ if (propertyForm || propertyFormUpdate) {
             ...e.target.files
         ];
         const filteredFile = selectedFiles.filter((el)=>!list.includes(el.name));
-        console.log(filteredFile);
         filteredFile.forEach((el)=>{
             selectedImagesList.push({
                 imgObj: el,
@@ -752,7 +749,6 @@ if (propertyForm || propertyFormUpdate) {
             });
             numImg++;
         });
-        console.log(selectedImagesList);
         const previewContainer = document.querySelector(".property__images-box-images");
         (0, _handleImagePreview.handleImagePreview)(previewContainer, filteredFile, currentNumImg);
         imagesInput.value = "";
@@ -762,7 +758,6 @@ bookmark.forEach((el)=>el.addEventListener("click", (e)=>{
         e.preventDefault();
         const target = e.target;
         const property = target.closest(".feature__card").dataset.propId;
-        console.log(property);
         if (target.classList.contains("active")) {
             //remove bookmark
             target.classList.remove("active");
@@ -3099,12 +3094,11 @@ parcelHelpers.export(exports, "signup", ()=>signup);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _alert = require("./alert");
-var _regeneratorRuntime = require("regenerator-runtime");
 const login = async (email, password)=>{
     try {
         const res = await (0, _axiosDefault.default)({
             method: "POST",
-            url: "http://127.0.0.1:3000/api/v1/users/login",
+            url: "/api/v1/users/login",
             data: {
                 email,
                 password
@@ -3122,10 +3116,9 @@ const login = async (email, password)=>{
 };
 const logout = async ()=>{
     try {
-        console.log("Logging out");
         const res = await (0, _axiosDefault.default)({
             method: "GET",
-            url: "http://127.0.0.1:3000/api/v1/users/logout"
+            url: "/api/v1/users/logout"
         });
         res.data.status = "success";
         window.setTimeout(()=>{
@@ -3146,10 +3139,9 @@ const signup = async (name, email, password, passwordConfirm, role)=>{
             passwordConfirm,
             role
         };
-        console.log(data);
         const res = await (0, _axiosDefault.default)({
             method: "POST",
-            url: "http://127.0.0.1:3000/api/v1/users/signup",
+            url: "/api/v1/users/signup",
             data
         });
         if (res.data.status === "success") {
@@ -3163,7 +3155,7 @@ const signup = async (name, email, password, passwordConfirm, role)=>{
     }
 };
 
-},{"axios":"5vw73","./alert":"8F2M5","@parcel/transformer-js/src/esmodule-helpers.js":"fofuL","regenerator-runtime":"cDAES"}],"5vw73":[function(require,module,exports) {
+},{"axios":"5vw73","./alert":"8F2M5","@parcel/transformer-js/src/esmodule-helpers.js":"fofuL"}],"5vw73":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>(0, _axiosJsDefault.default));
@@ -7475,11 +7467,11 @@ const deleteProperty = async ()=>{
             url,
             method: "DELETE"
         });
-        if (res.data.status === "success") {
-            window.location.reload();
+        if (res.status === 204) {
+            (0, _alert.showAlert)("success", "Deleted");
             setTimeout(()=>{
                 window.location.assign("/");
-            }, 3000);
+            }, 1500);
         }
     } catch (err) {
         (0, _alert.showAlert)("error", err.response.data.message);

@@ -5,23 +5,23 @@ block content
     section.container
         form.form__filters
             .form__group
-                label.form__label(for='filter__price') Name
+                label.form__label(for='filter__price') Price
                 input#filter__price.form__input(type='number', placeholder='Price', name="price[gte]", value="1")
             .form__group
                 label.form__label(for="filter__type") Type:
                 select.form__input#filter__type( name="type", required)
+                    option(value="sell") Selling
                     option(value="land") Land
                     option(value="shortlet") Shortlet
-                    option(value="sell") Selling
                     option(value="rent") Rent
             .form__group
                 button.btn.btn--login Filter
+        h2.section__title All Properties
         .properties
             each property in properties
                 .feature__card
                     a(href=`/property/${property.id}`).feature__card-img-box
                         img.feature__card-img(src=`/img/properties/${property.imageCover}`)
-                        .overlay
                     .feature__card-detail-box
                         .feature__card-detail
                             h4.feature__card-detail-name= property.name

@@ -140,7 +140,7 @@ main {
 }
 .header__logo {
   width: 20rem;
-  margin-right: auto;
+  margin-right: 6rem;
 }
 .header__img {
   width: 100%;
@@ -258,6 +258,7 @@ main {
 .feature__content {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-evenly;
   gap: 1.6rem;
 }
 .feature__card {
@@ -565,6 +566,9 @@ main {
 .property__agent span {
   text-transform: capitalize;
 }
+.property__agent .agent-email {
+  text-transform: lowercase;
+}
 .property__agent-detail {
   width: 100%;
   display: flex;
@@ -757,6 +761,7 @@ input[type=file] {
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
+  justify-content: space-evenly;
   margin: 4rem 0;
 }
 

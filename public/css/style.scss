@@ -166,7 +166,7 @@ main {
 
   &__logo {
     width: 20rem;
-    margin-right: auto;
+    margin-right: 6rem;
   }
   &__img {
     width: 100%;
@@ -302,6 +302,7 @@ main {
   &__content {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-evenly;
     gap: 1.6rem;
   }
 
@@ -662,6 +663,10 @@ main {
       text-transform: capitalize;
     }
 
+    .agent-email {
+      text-transform: lowercase;
+    }
+
     &-detail {
       width: 100%;
       display: flex;
@@ -876,6 +881,7 @@ input[type="file"] {
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
+  justify-content: space-evenly;
 
   margin: 4rem 0;
 }

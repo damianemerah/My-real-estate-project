@@ -2,13 +2,13 @@ extends base
 
 block content 
     section.container
+        h2.section__title Bookmarked Properties
         .properties
             each property in properties
                 - const formattedPrice = price => price.toLocaleString("en-NG", { style: "currency", currency: "NGN", minimumFractionDigits: 0 });
                 .feature__card(data-prop-id=property.id)
                     a(href=`/property/${property.id}`).feature__card-img-box
                         img.feature__card-img(src=`/img/properties/${property.imageCover}`)
-                        .overlay
                     .feature__card-detail-box
                         .feature__card-detail
                             h4.feature__card-detail-name= property.name

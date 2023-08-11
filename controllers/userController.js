@@ -123,9 +123,13 @@ exports.addBookmark = catchAsync(async (req, res, next) => {
 exports.removeBookmark = catchAsync(async (req, res, next) => {
   const { bookmark } = req.body;
 
-  const user = await User.findByIdAndUpdate(req.user.id, {
-    $pull: { bookmark },
-  });
+  const user = await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      $pull: { bookmark },
+    },
+    { new: true, runValidators: true }
+  );
 
   res.status(200).json({
     status: "success",

@@ -1,12 +1,11 @@
 import axios from "axios";
 import { showAlert } from "./alert";
-import { async } from "regenerator-runtime";
 
 export const login = async (email, password) => {
   try {
     const res = await axios({
       method: "POST",
-      url: "http://127.0.0.1:3000/api/v1/users/login",
+      url: "/api/v1/users/login",
       data: {
         email,
         password,
@@ -25,10 +24,9 @@ export const login = async (email, password) => {
 
 export const logout = async () => {
   try {
-    console.log("Logging out");
     const res = await axios({
       method: "GET",
-      url: "http://127.0.0.1:3000/api/v1/users/logout",
+      url: "/api/v1/users/logout",
     });
 
     if ((res.data.status = "success")) {
@@ -53,10 +51,9 @@ export const signup = async (name, email, password, passwordConfirm, role) => {
       passwordConfirm,
       role,
     };
-    console.log(data);
     const res = await axios({
       method: "POST",
-      url: "http://127.0.0.1:3000/api/v1/users/signup",
+      url: "/api/v1/users/signup",
       data,
     });
     if (res.data.status === "success") {

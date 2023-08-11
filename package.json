@@ -12,7 +12,7 @@
     "start:prod": "SET NODE_ENV=production&& nodemon server.js",
     "debug": "ndb server.js",
     "watch:js": "parcel watch ./public/js/index.js --dist-dir ./public/js/bundle",
-    "build:js": "parcel build ./public/js/index.js --dist-dir ./public/js"
+    "build:js": "parcel build ./public/js/index.js --dist-dir ./public/js/bundle"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,7 @@
   "dependencies": {
     "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "core-js": "^3.30.2",
     "dotenv": "^16.0.3",
@@ -42,7 +43,6 @@
   },
   "devDependencies": {
     "buffer": "^5.7.1",
-    "connect-livereload": "^0.6.1",
     "eslint": "^8.41.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.8.0",

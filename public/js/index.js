@@ -83,9 +83,6 @@ if (userDataForm)
     form.append("email", document.getElementById("email").value);
     form.append("photo", document.getElementById("photo").files[0]);
 
-    for (const [key, value] of form.entries()) {
-      console.log(key, ":", value);
-    }
     updateSettings(form, "data");
   });
 
@@ -160,7 +157,19 @@ if (tagList)
 if (deletePropBtn)
   deletePropBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    deleteProperty();
+    let res = prompt("Confirm delete property : Ans (Y/N)");
+
+    if (res.toLocaleLowerCase() === "y" || res.toLocaleLowerCase() === "yes") {
+      deleteProperty();
+    } else if (
+      res.toLocaleLowerCase() === "n" ||
+      res.toLocaleLowerCase() === "no" ||
+      res.toLocaleLowerCase() === ""
+    ) {
+      return;
+    } else {
+      res = prompt("Ans (Y/N) :");
+    }
   });
 
 if (propertyForm)
@@ -182,10 +191,6 @@ if (propertyFormUpdate) {
 
     const form = formFields(selectedImageCover, imgList);
 
-    for (const [key, value] of form.entries()) {
-      console.log(key, value);
-    }
-
     addProperty(form, "update");
   });
 }
@@ -195,7 +200,6 @@ if (propertyForm || propertyFormUpdate) {
   const amenitiesField = document.querySelector(".amenities");
 
   propertyType.addEventListener("change", () => {
-    console.log(amenitiesField);
     if (propertyType.value.toLowerCase() === "land") {
       amenitiesField.style.display = "none";
     } else {
@@ -232,7 +236,6 @@ if (propertyForm || propertyFormUpdate) {
         if (img.src.startsWith("http")) {
           // Handle existing image URL
           if (img.classList.contains("cur__prop-imageCover")) {
-            console.log(selectedImageCover);
             selectedImageCover = "";
           } else {
             const itemIndex = selectedImagesList.findIndex(
@@ -289,8 +292,6 @@ if (propertyForm || propertyFormUpdate) {
     const selectedFiles = [...e.target.files];
     const filteredFile = selectedFiles.filter((el) => !list.includes(el.name));
 
-    console.log(filteredFile);
-
     filteredFile.forEach((el) => {
       selectedImagesList.push({
         imgObj: el,
@@ -298,8 +299,6 @@ if (propertyForm || propertyFormUpdate) {
       });
       numImg++;
     });
-
-    console.log(selectedImagesList);
 
     const previewContainer = document.querySelector(
       ".property__images-box-images"
@@ -316,8 +315,6 @@ bookmark.forEach((el) =>
     e.preventDefault();
     const target = e.target;
     const property = target.closest(".feature__card").dataset.propId;
-
-    console.log(property);
 
     if (target.classList.contains("active")) {
       //remove bookmark

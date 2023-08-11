@@ -10,10 +10,10 @@ block content
                 p Let’s find a home that’s perfect for you
                 .hero__btn-box
                     a.hero__btn.hero__btn--buy.btn(href='/property') All
-                    a.hero__btn.hero__btn--buy.btn(href='#') Buy
-                    a.hero__btn.hero__btn--buy.btn(href='#') Rent
-                    a.hero__btn.hero__btn--shortlet.btn(href='#') Shortlet
-                    a.hero__btn.hero__btn--land.btn(href='#') Land
+                    a.hero__btn.hero__btn--buy.btn(href='/property') Buy
+                    a.hero__btn.hero__btn--buy.btn(href='/property') Rent
+                    a.hero__btn.hero__btn--shortlet.btn(href='/property') Shortlet
+                    a.hero__btn.hero__btn--land.btn(href='/property') Land
                
                 if (!user)
                     nav.hero-btn
@@ -30,7 +30,6 @@ block content
                         .feature__card(data-prop-id=property.id)
                             a(href=`/property/${property.id}`).feature__card-img-box
                                 img.feature__card-img(src=`/img/properties/${property.imageCover}`)
-                                .overlay
                             .feature__card-detail-box
                                 .feature__card-detail
                                     h4.feature__card-detail-name= property.name

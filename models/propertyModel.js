@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const slugify = require("slugify");
 // const validator = require("validator");
 
-const alphanumericValidator = (value) => /^[a-zA-Z0-9\s]+$/.test(value);
+const alphanumericValidator = (value) => /^[a-zA-Z0-9\s/.()-]+$/.test(value);
 
 const propertyTypeCheck = function () {
   return this.type !== "land";
